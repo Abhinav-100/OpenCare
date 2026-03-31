@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-blood-inventory-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blood_inventory
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: blood_inventory_id_pk
+                  remarks: "Primary key identifier for blood inventory"
+
+              - column:
+                  name: blood_bank_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  remarks: "Reference to blood bank"
+
+              - column:
+                  name: blood_group
+                  type: varchar(15)
+                  constraints:
+                    nullable: false
+                  remarks: "Blood group (e.g., A+, O-)"
+
+              - column:
+                  name: component
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  remarks: "Blood component (WHOLE_BLOOD, PLASMA, RBC, PLATELETS)"
+
+              - column:
+                  name: available_units
+                  type: int4
+                  defaultValueNumeric: 0
+                  remarks: "Available units of this blood group/component"
+
+              - column:
+                  name: last_updated
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Last update timestamp"
+
+        - addForeignKeyConstraint:
+            baseTableName: blood_inventory
+            baseColumnNames: blood_bank_id
+            constraintName: fk_blood_inventory_blood_bank
+            referencedTableName: blood_bank
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addUniqueConstraint:
+            tableName: blood_inventory
+            columnNames: blood_bank_id, blood_group, component
+            constraintName: uq_blood_inventory_bank_group_component
+
+        - createIndex:
+            tableName: blood_inventory
+            indexName: idx_blood_inventory_blood_bank
+            columns:
+              - column:
+                  name: blood_bank_id
+
+        - createIndex:
+            tableName: blood_inventory
+            indexName: idx_blood_inventory_blood_group
+            columns:
+              - column:
+                  name: blood_group
+
+        - createIndex:
+            tableName: blood_inventory
+            indexName: idx_blood_inventory_component
+            columns:
+              - column:
+                  name: component

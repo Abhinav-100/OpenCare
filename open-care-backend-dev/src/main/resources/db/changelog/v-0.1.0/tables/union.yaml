@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-union-table
+      author: sadman
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: union_id_pk
+                  name: id
+                  type: serial
+                  startWith: 4541
+                  remarks: "Primary key. Unique union identifier"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: upazila_id
+                  type: int4
+                  remarks: "Foreign key to upazila"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: varchar(100)
+                  remarks: "Union name in English"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: bn_name
+                  type: varchar(100)
+                  remarks: "Union name in Bangla"
+              - column:
+                  name: lat
+                  type: numeric(12,9)
+                  remarks: "Latitude coordinate for location"
+              - column:
+                  name: lon
+                  type: numeric(12,9)
+                  remarks: "Longitude coordinate for location"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: url
+                  type: varchar(100)
+                  remarks: "URL for union resource"
+              - column:
+                  name: geom
+                  type: geometry(MULTIPOLYGON,4326)
+                  remarks: "Geographical boundary (geometry)"
+            tableName: union
+        - addForeignKeyConstraint:
+            baseColumnNames: upazila_id
+            baseTableName: union
+            constraintName: union_fk_upazila
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: upazila
+            validate: true
+        - createIndex:
+            tableName: union
+            indexName: idx_union_name
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            tableName: union
+            indexName: idx_union_upazila
+            columns:
+              - column:
+                  name: upazila_id

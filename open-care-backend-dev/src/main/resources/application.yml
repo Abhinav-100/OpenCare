@@ -1,0 +1,230 @@
+server:
+  port: ${SERVER_PORT:6700}
+
+spring:
+  application:
+    name: open-care-backend
+
+  # Postgres configuration
+  datasource:
+    url: jdbc:postgresql://${DB_HOSTNAME:localhost}:${DB_PORT:5432}/open_care
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:12345678}
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: opencare
+
+  liquibase:
+    drop-first: false
+    default-schema: opencare
+    liquibase-schema: opencare
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  # Keycloak Configuration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_SERVER_URL:http://localhost:8080}/realms/${KEYCLOAK_REALM:opencare}
+          jwk-set-uri: ${KEYCLOAK_SERVER_URL:http://localhost:8080}/realms/${KEYCLOAK_REALM:opencare}/protocol/openid-connect/certs
+
+  # Connection timeouts
+  mvc:
+    async:
+      request-timeout: 30000
+
+  # cache configuration
+  cache:
+    type: caffeine
+    cache-names:
+      # External API caches
+      - githubContributors
+      - latestBlogPosts
+      # Dashboard caches
+      - dashboardOverview
+      - bloodBankData
+      - registrationTrends
+      - systemAlerts
+      - recentActivities
+
+      # Medical data caches
+      - topDoctors
+      - associations
+      - degrees
+      - institutions
+      - medicalSpecialities
+      - medicalTests
+      - hospitals
+      - doctors
+      - searchResults
+
+      # Location hierarchy caches
+      - divisions
+      - districts
+      - upazilas
+      - unions
+
+      # Relationship caches
+      - districtsByDivision
+      - upazilasByDistrict
+      - unionsByUpazila
+
+  caffeine:
+    spec: maximumSize=${CACHE_MAX_SIZE:500},expireAfterWrite=${CACHE_TTL:30m},recordStats
+
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS:http://localhost:9200}
+    username: ${ELASTICSEARCH_USERNAME:elastic}
+    password: ${ELASTICSEARCH_PASSWORD:elastic}
+    connection-timeout: 30000
+    socket-timeout: 60000
+  data:
+    elasticsearch:
+      client:
+        reactive: false
+      repositories:
+        enabled: ${APP_SEARCH_ENABLED:false}
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: ${HEALTH_SHOW_DETAILS:when-authorized}
+      show-components: ${HEALTH_SHOW_COMPONENTS:when-authorized}
+      probes:
+        enabled: ${HEALTH_PROBES_ENABLED:true}
+  prometheus:
+    metrics:
+      export:
+        enabled: ${PROMETHEUS_ENABLED:false}
+
+app:
+  core-scope-only: ${APP_CORE_SCOPE_ONLY:true}
+  region:
+    default-country: ${APP_REGION_DEFAULT_COUNTRY:India}
+    default-country-code: ${APP_REGION_DEFAULT_COUNTRY_CODE:IN}
+    default-currency: ${APP_REGION_DEFAULT_CURRENCY:INR}
+    phone-country-code: ${APP_REGION_PHONE_COUNTRY_CODE:+91}
+    locale: ${APP_REGION_LOCALE:en-IN}
+    indian-phone-regex: ${APP_REGION_INDIAN_PHONE_REGEX:^(\\+91[6-9]\\d{9}|[6-9]\\d{9})$}
+  # Keycloak connections
+  keycloak:
+    server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
+    realm: ${KEYCLOAK_REALM:opencare}
+    client-id: ${KEYCLOAK_CLIENT_ID:open-care-backend}
+    client-secret: ${KEYCLOAK_CLIENT_SECRET:u3L5IEUSLoBoPzFghcMUvdSJSUedr6Fm}
+    admin:
+      realm: ${KEYCLOAK_ADMIN_REALM:master}
+      client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
+      username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+      password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
+  # Search Configuration
+  search:
+    enabled: ${APP_SEARCH_ENABLED:false}
+    max-results-per-domain: ${SEARCH_MAX_RESULTS_PER_DOMAIN:10}
+    max-suggestions: ${SEARCH_MAX_SUGGESTIONS:20}
+    domains:
+      doctors:
+        enabled: ${SEARCH_DOCTORS_ENABLED:true}
+        max-results: ${SEARCH_DOCTORS_MAX_RESULTS:100}
+        searchable-fields: [ "name", "bnName", "bmdcNo", "specializations", "degrees", "description" ]
+        weight: ${SEARCH_DOCTORS_WEIGHT:1.0}
+      hospitals:
+        enabled: ${SEARCH_HOSPITALS_ENABLED:true}
+        max-results: ${SEARCH_HOSPITALS_MAX_RESULTS:100}
+        searchable-fields: [ "name", "bnName", "websiteUrl", "hospitalType", "organizationType" ]
+        weight: ${SEARCH_HOSPITALS_WEIGHT:1.0}
+      institutions:
+        enabled: ${SEARCH_INSTITUTIONS_ENABLED:true}
+        max-results: ${SEARCH_INSTITUTIONS_MAX_RESULTS:100}
+        searchable-fields: [ "name", "bnName", "websiteUrl", "institutionType", "organizationType" ]
+        weight: ${SEARCH_INSTITUTIONS_WEIGHT:1.0}
+    field-weights:
+      name: ${SEARCH_FIELD_WEIGHT_NAME:2.0}
+      bnName: ${SEARCH_FIELD_WEIGHT_BN_NAME:1.5}
+      specializations: ${SEARCH_FIELD_WEIGHT_SPECIALIZATIONS:1.0}
+      degrees: ${SEARCH_FIELD_WEIGHT_DEGREES:0.8}
+      description: ${SEARCH_FIELD_WEIGHT_DESCRIPTION:0.5}
+    cache:
+      enabled: ${SEARCH_CACHE_ENABLED:true}
+      ttl-seconds: ${SEARCH_CACHE_TTL:300}
+      max-size: ${SEARCH_CACHE_MAX_SIZE:1000}
+
+  # Rate limiting
+  rate-limiting:
+    enabled: ${RATE_LIMITING_ENABLED:true}
+    limit: ${RATE_LIMITING_LIMIT:100}
+    refresh-period: ${RATE_LIMITING_REFRESH_PERIOD:60}
+
+  # Razorpay Payment Gateway
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID}
+    key-secret: ${RAZORPAY_KEY_SECRET}
+    webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
+
+  # Application URLs
+  frontend:
+    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:5173/callback}
+
+  module-jwt:
+    secret: ${MODULE_JWT_SECRET:c3VwZXJzZWNyZXQtbW9kdWxlLWp3dC1zaGEyNTYta2V5LTIwMjY=}
+    issuer: ${MODULE_JWT_ISSUER:opencare-module-auth}
+    expiration-seconds: ${MODULE_JWT_EXPIRATION_SECONDS:7200}
+
+# Security headers
+security:
+  headers:
+    content-security-policy: "default-src 'self'; frame-ancestors 'none'"
+    strict-transport-security: "max-age=31536000; includeSubDomains"
+
+# Swagger Configuration
+springdoc:
+  show-actuator: false
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    tags-sorter: alpha
+    doc-expansion: none
+    default-models-expand-depth: 0
+    filter: true
+    enabled: true
+  api-docs:
+    path: /api-docs/public
+    enabled: true
+  disable-i18n: true
+
+# Logging Configuration
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:error}
+    sql: ${LOGGING_LEVEL_SQL:debug}
+    web: ${LOGGING_LEVEL_WEB:debug}
+
+# Minio Configuration
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://127.0.0.1:9000}
+  accessKey: ${MINIO_ACCESS_KEY:minioadmin}
+  secretKey: ${MINIO_SECRET_KEY:minioadmin123}
+  bucketName: ${MINIO_BUCKET_NAME:opencare}
+
+# GitHub Configuration
+github:
+  token: ${GITHUB_TOKEN:ghp_your_github_token_here}
+  repositories:
+    - Cipher-Text/open-care-frontend
+    - Cipher-Text/opencare
+    - Cipher-Text/open-care-backend

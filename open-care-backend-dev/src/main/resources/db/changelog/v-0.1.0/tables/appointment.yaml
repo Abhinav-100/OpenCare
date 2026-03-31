@@ -1,0 +1,257 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-appointment-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: appointment
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: appointment_id_pk
+                  remarks: "Primary key identifier"
+              
+              - column:
+                  name: appointment_number
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_appointment_number
+                  remarks: "Unique appointment number for tracking"
+              
+              - column:
+                  name: patient_profile_id
+                  type: int8
+                  constraints:
+                    nullable: false
+                  remarks: "Reference to patient profile"
+              
+              - column:
+                  name: doctor_id
+                  type: int8
+                  constraints:
+                    nullable: false
+                  remarks: "Reference to doctor"
+              
+              - column:
+                  name: appointment_type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                  remarks: "ONLINE or OFFLINE"
+              
+              - column:
+                  name: appointment_date
+                  type: date
+                  constraints:
+                    nullable: false
+                  remarks: "Date of appointment"
+              
+              - column:
+                  name: start_time
+                  type: time
+                  constraints:
+                    nullable: false
+                  remarks: "Start time of appointment"
+              
+              - column:
+                  name: end_time
+                  type: time
+                  constraints:
+                    nullable: false
+                  remarks: "End time of appointment"
+              
+              - column:
+                  name: duration_minutes
+                  type: int4
+                  defaultValueNumeric: 30
+                  constraints:
+                    nullable: false
+                  remarks: "Duration of appointment in minutes"
+              
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: 'PENDING'
+                  constraints:
+                    nullable: false
+                  remarks: "PENDING, CONFIRMED, CANCELLED, COMPLETED, NO_SHOW"
+              
+              - column:
+                  name: consultation_fee
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+                  remarks: "Consultation fee amount"
+              
+              - column:
+                  name: payment_status
+                  type: varchar(20)
+                  defaultValue: 'PENDING'
+                  constraints:
+                    nullable: false
+                  remarks: "PENDING, PAID, FAILED, REFUNDED"
+              
+              - column:
+                  name: payment_transaction_id
+                  type: varchar(100)
+                  remarks: "External payment transaction ID"
+              
+              - column:
+                  name: hospital_id
+                  type: int4
+                  remarks: "Reference to hospital for offline appointments"
+              
+              - column:
+                  name: doctor_workplace_id
+                  type: int8
+                  remarks: "Reference to doctor workplace"
+              
+              - column:
+                  name: meeting_link
+                  type: varchar(500)
+                  remarks: "Video call link for online appointments"
+              
+              - column:
+                  name: symptoms
+                  type: text
+                  remarks: "Patient symptoms description"
+              
+              - column:
+                  name: notes
+                  type: text
+                  remarks: "Additional notes"
+              
+              - column:
+                  name: cancellation_reason
+                  type: text
+                  remarks: "Reason for cancellation if applicable"
+              
+              - column:
+                  name: cancelled_by
+                  type: varchar(100)
+                  remarks: "Who cancelled the appointment"
+              
+              - column:
+                  name: cancelled_at
+                  type: timestamp
+                  remarks: "When appointment was cancelled"
+              
+              - column:
+                  name: reminder_sent
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether reminder was sent"
+              
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+              
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+              
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+              
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+        
+        - addForeignKeyConstraint:
+            baseColumnNames: patient_profile_id
+            baseTableName: appointment
+            constraintName: appointment_fk_patient_profile
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: profile
+        
+        - addForeignKeyConstraint:
+            baseColumnNames: doctor_id
+            baseTableName: appointment
+            constraintName: appointment_fk_doctor
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: doctor
+        
+        - addForeignKeyConstraint:
+            baseColumnNames: hospital_id
+            baseTableName: appointment
+            constraintName: appointment_fk_hospital
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: hospital
+        
+        - addForeignKeyConstraint:
+            baseColumnNames: doctor_workplace_id
+            baseTableName: appointment
+            constraintName: appointment_fk_doctor_workplace
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: doctor_workplace
+        
+        - createIndex:
+            indexName: idx_appointment_doctor_date
+            tableName: appointment
+            columns:
+              - column:
+                  name: doctor_id
+              - column:
+                  name: appointment_date
+        
+        - createIndex:
+            indexName: idx_appointment_patient
+            tableName: appointment
+            columns:
+              - column:
+                  name: patient_profile_id
+        
+        - createIndex:
+            indexName: idx_appointment_status
+            tableName: appointment
+            columns:
+              - column:
+                  name: status
+        
+        - createIndex:
+            indexName: idx_appointment_payment_status
+            tableName: appointment
+            columns:
+              - column:
+                  name: payment_status

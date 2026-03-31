@@ -1,0 +1,528 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-prescription-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: prescription
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: prescription_id_pk
+                  remarks: "Primary key identifier"
+
+              - column:
+                  name: prescription_no
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_prescription_no
+                  remarks: "Unique prescription number"
+
+              # Link to appointment for complete traceability
+              - column:
+                  name: appointment_id
+                  type: int8
+                  remarks: "Reference to appointment that generated this prescription"
+
+              - column:
+                  name: patient_profile_id
+                  type: int8
+                  constraints:
+                    nullable: false
+                  remarks: "Reference to patient profile"
+
+              - column:
+                  name: doctor_id
+                  type: int8
+                  constraints:
+                    nullable: false
+                  remarks: "Reference to prescribing doctor"
+
+              # Hospital/workplace context from appointment
+              - column:
+                  name: hospital_id
+                  type: int4
+                  remarks: "Hospital where prescription was issued"
+
+              - column:
+                  name: doctor_workplace_id
+                  type: int8
+                  remarks: "Doctor workplace context"
+
+              - column:
+                  name: prescription_date
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Date and time prescription was issued"
+
+              # Enhanced medical information
+              - column:
+                  name: chief_complaint
+                  type: text
+                  remarks: "Patient's main complaint"
+
+              - column:
+                  name: history_of_present_illness
+                  type: text
+                  remarks: "History of current illness"
+
+              - column:
+                  name: past_medical_history
+                  type: text
+                  remarks: "Past medical conditions"
+
+              - column:
+                  name: family_history
+                  type: text
+                  remarks: "Family medical history"
+
+              - column:
+                  name: allergies
+                  type: text
+                  remarks: "Known allergies and adverse reactions"
+
+              # Vital signs and physical examination
+              - column:
+                  name: weight_kg
+                  type: decimal(5,2)
+                  remarks: "Patient weight in kilograms"
+
+              - column:
+                  name: height_cm
+                  type: decimal(5,2)
+                  remarks: "Patient height in centimeters"
+
+              - column:
+                  name: temperature_celsius
+                  type: decimal(4,2)
+                  remarks: "Body temperature in Celsius"
+
+              - column:
+                  name: blood_pressure_systolic
+                  type: int4
+                  remarks: "Systolic blood pressure (mmHg)"
+
+              - column:
+                  name: blood_pressure_diastolic
+                  type: int4
+                  remarks: "Diastolic blood pressure (mmHg)"
+
+              - column:
+                  name: pulse_rate
+                  type: int4
+                  remarks: "Pulse rate per minute"
+
+              - column:
+                  name: respiratory_rate
+                  type: int4
+                  remarks: "Respiratory rate per minute"
+
+              - column:
+                  name: oxygen_saturation
+                  type: decimal(5,2)
+                  remarks: "Oxygen saturation percentage"
+
+              - column:
+                  name: physical_examination
+                  type: text
+                  remarks: "Physical examination findings"
+
+              # Diagnosis and symptoms
+              - column:
+                  name: symptoms
+                  type: text
+                  remarks: "Patient symptoms description"
+
+              - column:
+                  name: diagnosis
+                  type: text
+                  constraints:
+                    nullable: false
+                  remarks: "Primary diagnosis"
+
+              - column:
+                  name: secondary_diagnosis
+                  type: text
+                  remarks: "Secondary or differential diagnosis"
+
+              - column:
+                  name: icd_10_code
+                  type: varchar(20)
+                  remarks: "ICD-10 diagnosis code"
+
+              # Investigation and treatment
+              - column:
+                  name: investigations_ordered
+                  type: text
+                  remarks: "Laboratory/imaging tests ordered"
+
+              - column:
+                  name: treatment_plan
+                  type: text
+                  remarks: "Overall treatment plan"
+
+              - column:
+                  name: advice
+                  type: text
+                  remarks: "General medical advice and instructions"
+
+              # Follow-up and referral
+              - column:
+                  name: next_visit_date
+                  type: date
+                  remarks: "Recommended next visit date"
+
+              - column:
+                  name: next_visit_instructions
+                  type: text
+                  remarks: "Instructions for next visit"
+
+              - column:
+                  name: referral_to
+                  type: varchar(200)
+                  remarks: "Referred to specialist/hospital if any"
+
+              - column:
+                  name: referral_reason
+                  type: text
+                  remarks: "Reason for referral"
+
+              - column:
+                  name: referral_urgency
+                  type: varchar(20)
+                  remarks: "ROUTINE, URGENT, EMERGENCY"
+
+              # Digital prescription features
+              - column:
+                  name: prescription_type
+                  type: varchar(20)
+                  defaultValue: 'DIGITAL'
+                  constraints:
+                    nullable: false
+                  remarks: "DIGITAL, PRINTED, HANDWRITTEN"
+
+              - column:
+                  name: digital_signature
+                  type: text
+                  remarks: "Digital signature of the doctor"
+
+              - column:
+                  name: prescription_image_url
+                  type: varchar(500)
+                  remarks: "URL to prescription image if scanned"
+
+              - column:
+                  name: prescription_qr_code
+                  type: text
+                  remarks: "QR code for prescription verification"
+
+              # Prescription validity and compliance
+              - column:
+                  name: valid_until
+                  type: date
+                  remarks: "Prescription validity date"
+
+              - column:
+                  name: is_controlled_substance
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Contains controlled/restricted medications"
+
+              - column:
+                  name: pharmacy_dispensed
+                  type: varchar(200)
+                  remarks: "Pharmacy where prescription was dispensed"
+
+              - column:
+                  name: dispensed_date
+                  type: timestamp
+                  remarks: "When prescription was dispensed"
+
+              - column:
+                  name: dispensed_by
+                  type: varchar(100)
+                  remarks: "Pharmacist who dispensed the medication"
+
+              # Emergency and priority
+              - column:
+                  name: is_emergency_prescription
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Emergency prescription flag"
+
+              - column:
+                  name: priority_level
+                  type: varchar(20)
+                  defaultValue: 'NORMAL'
+                  remarks: "NORMAL, HIGH, URGENT, CRITICAL"
+
+              # Patient and doctor satisfaction
+              - column:
+                  name: patient_satisfaction_rating
+                  type: int4
+                  remarks: "Patient satisfaction rating (1-5)"
+
+              - column:
+                  name: patient_feedback
+                  type: text
+                  remarks: "Patient feedback on treatment"
+
+              # Prescription status and tracking
+              - column:
+                  name: prescription_status
+                  type: varchar(20)
+                  defaultValue: 'ISSUED'
+                  constraints:
+                    nullable: false
+                  remarks: "ISSUED, DISPENSED, PARTIALLY_DISPENSED, CANCELLED, EXPIRED"
+
+              - column:
+                  name: cancellation_reason
+                  type: text
+                  remarks: "Reason for cancellation if applicable"
+
+              - column:
+                  name: cancelled_by
+                  type: varchar(100)
+                  remarks: "Who cancelled the prescription"
+
+              - column:
+                  name: cancelled_at
+                  type: timestamp
+                  remarks: "When prescription was cancelled"
+
+              # Insurance and billing
+              - column:
+                  name: insurance_claim_number
+                  type: varchar(100)
+                  remarks: "Insurance claim reference number"
+
+              - column:
+                  name: consultation_fee_charged
+                  type: decimal(10,2)
+                  remarks: "Consultation fee charged for this prescription"
+
+              - column:
+                  name: is_follow_up
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether this is a follow-up prescription"
+
+              - column:
+                  name: original_prescription_id
+                  type: int8
+                  remarks: "Reference to original prescription if this is a follow-up"
+
+              # Audit fields
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+                  remarks: "Whether prescription is active"
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        # Foreign Key Constraints
+        - addForeignKeyConstraint:
+            baseColumnNames: appointment_id
+            baseTableName: prescription
+            constraintName: prescription_fk_appointment
+            onUpdate: CASCADE
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: appointment
+
+        - addForeignKeyConstraint:
+            baseColumnNames: patient_profile_id
+            baseTableName: prescription
+            constraintName: prescription_fk_patient_profile
+            onUpdate: CASCADE
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: profile
+
+        - addForeignKeyConstraint:
+            baseColumnNames: doctor_id
+            baseTableName: prescription
+            constraintName: prescription_fk_doctor
+            onUpdate: CASCADE
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: doctor
+
+        - addForeignKeyConstraint:
+            baseColumnNames: hospital_id
+            baseTableName: prescription
+            constraintName: prescription_fk_hospital
+            onUpdate: CASCADE
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: hospital
+
+        - addForeignKeyConstraint:
+            baseColumnNames: doctor_workplace_id
+            baseTableName: prescription
+            constraintName: prescription_fk_doctor_workplace
+            onUpdate: CASCADE
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: doctor_workplace
+
+        - addForeignKeyConstraint:
+            baseColumnNames: original_prescription_id
+            baseTableName: prescription
+            constraintName: prescription_fk_original_prescription
+            onUpdate: CASCADE
+            onDelete: SET NULL
+            referencedColumnNames: id
+            referencedTableName: prescription
+
+        # Performance Indexes
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_no
+            columns:
+              - column:
+                  name: prescription_no
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_appointment
+            columns:
+              - column:
+                  name: appointment_id
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_patient
+            columns:
+              - column:
+                  name: patient_profile_id
+              - column:
+                  name: prescription_date
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_doctor
+            columns:
+              - column:
+                  name: doctor_id
+              - column:
+                  name: prescription_date
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_hospital
+            columns:
+              - column:
+                  name: hospital_id
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_type
+            columns:
+              - column:
+                  name: prescription_type
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_validity
+            columns:
+              - column:
+                  name: valid_until
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_controlled
+            columns:
+              - column:
+                  name: is_controlled_substance
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_status
+            columns:
+              - column:
+                  name: prescription_status
+              - column:
+                  name: is_active
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_emergency
+            columns:
+              - column:
+                  name: is_emergency_prescription
+              - column:
+                  name: priority_level
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_follow_up
+            columns:
+              - column:
+                  name: is_follow_up
+              - column:
+                  name: original_prescription_id
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_dispensed
+            columns:
+              - column:
+                  name: dispensed_date
+              - column:
+                  name: pharmacy_dispensed
+
+        - createIndex:
+            tableName: prescription
+            indexName: idx_prescription_icd
+            columns:
+              - column:
+                  name: icd_10_code

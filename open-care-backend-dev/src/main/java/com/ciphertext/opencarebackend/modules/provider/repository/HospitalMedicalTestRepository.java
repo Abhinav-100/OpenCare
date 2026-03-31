@@ -1,0 +1,16 @@
+package com.ciphertext.opencarebackend.modules.provider.repository;
+
+import com.ciphertext.opencarebackend.entity.HospitalMedicalTest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface HospitalMedicalTestRepository extends JpaRepository<HospitalMedicalTest, Long> , JpaSpecificationExecutor<HospitalMedicalTest> {
+    List<HospitalMedicalTest> findByHospitalId(Long hospitalId);
+    Optional<HospitalMedicalTest> findByIdAndHospitalId(Long id, Long hospitalId);
+    long countAllByHospital_Id(int hospitalId);
+}

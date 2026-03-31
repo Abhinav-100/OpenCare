@@ -1,0 +1,254 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-social-organization-table
+      author: sadman
+      validCheckSum: "ANY"
+      changes:
+        - createTable:
+            tableName: social_organization
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  startWith: 149
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: social_organization_id_pk
+                  remarks: "Primary key identifier for social organization"
+
+              - column:
+                  name: name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+                  remarks: "Social organization name in English"
+
+              - column:
+                  name: bn_name
+                  type: varchar(200)
+                  remarks: "Social organization name in Bengali"
+
+              - column:
+                  name: logo_url
+                  type: varchar(500)
+                  remarks: "URL to organization logo"
+
+              - column:
+                  name: social_organization_type
+                  type: varchar(10)
+                  remarks: "Type of social organization (e.g., NGO, CHARITY, CLUB)"
+
+              - column:
+                  name: founded_date
+                  type: timestamp
+                  remarks: "Date when organization was founded"
+
+              - column:
+                  name: description
+                  type: varchar(1000)
+                  remarks: "Detailed description of the organization"
+
+              - column:
+                  name: address
+                  type: varchar(500)
+                  remarks: "Full address of the organization"
+
+              - column:
+                  name: website_url
+                  type: varchar(500)
+                  remarks: "Official website URL"
+
+              - column:
+                  name: facebook_url
+                  type: varchar(500)
+                  remarks: "Facebook page URL"
+
+              - column:
+                  name: twitter_url
+                  type: varchar(500)
+                  remarks: "Twitter profile URL"
+
+              - column:
+                  name: linkedin_url
+                  type: varchar(500)
+                  remarks: "LinkedIn profile URL"
+
+              - column:
+                  name: youtube_url
+                  type: varchar(500)
+                  remarks: "YouTube channel URL"
+
+              - column:
+                  name: email
+                  type: varchar(500)
+                  remarks: "Primary contact email"
+
+              - column:
+                  name: phone
+                  type: varchar(100)
+                  remarks: "Primary contact phone number"
+
+              - column:
+                  name: division_id
+                  type: int4
+                  remarks: "Reference to division location"
+
+              - column:
+                  name: district_id
+                  type: int4
+                  remarks: "Reference to district location"
+
+              - column:
+                  name: upazila_id
+                  type: int4
+                  remarks: "Reference to upazila location"
+
+              - column:
+                  name: union_id
+                  type: int4
+                  remarks: "Reference to union location"
+
+              - column:
+                  name: origin_country
+                  type: varchar(100)
+                  remarks: "Country of origin"
+
+              - column:
+                  name: is_affiliated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the organization is affiliated with OpenCare"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the organization is currently active"
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        - addForeignKeyConstraint:
+            baseColumnNames: division_id
+            baseTableName: social_organization
+            constraintName: fk_social_organization_division_id
+            referencedColumnNames: id
+            referencedTableName: division
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: district_id
+            baseTableName: social_organization
+            constraintName: fk_social_organization_district_id
+            referencedColumnNames: id
+            referencedTableName: district
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: upazila_id
+            baseTableName: social_organization
+            constraintName: fk_social_organization_upazila_id
+            referencedColumnNames: id
+            referencedTableName: upazila
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: union_id
+            baseTableName: social_organization
+            constraintName: fk_social_organization_union_id
+            referencedColumnNames: id
+            referencedTableName: union
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - createIndex:
+            tableName: social_organization
+            indexName: idx_social_organization_name
+            columns:
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: social_organization
+            indexName: idx_social_organization_type
+            columns:
+              - column:
+                  name: social_organization_type
+
+        - createIndex:
+            tableName: social_organization
+            indexName: idx_social_organization_location
+            columns:
+              - column:
+                  name: division_id
+              - column:
+                  name: district_id
+              - column:
+                  name: upazila_id
+              - column:
+                  name: union_id
+
+        - createIndex:
+            tableName: social_organization
+            indexName: idx_social_organization_affiliation
+            columns:
+              - column:
+                  name: is_affiliated
+
+        - createIndex:
+            tableName: social_organization
+            indexName: idx_social_organization_active
+            columns:
+              - column:
+                  name: is_active
+
+        - createIndex:
+            tableName: social_organization
+            indexName: idx_social_organization_country
+            columns:
+              - column:
+                  name: origin_country
+
+        - createIndex:
+            tableName: social_organization
+            indexName: idx_social_organization_founded
+            columns:
+              - column:
+                  name: founded_date

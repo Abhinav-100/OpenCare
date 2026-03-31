@@ -1,0 +1,17 @@
+# Keep this file small and temporary.
+# Rules:
+# 1) Add only reviewed false positives or accepted risks.
+# 2) Every entry must include: owner, reason, created date, expiry date.
+# 3) Remove entries as soon as a patch is available.
+#
+# Format:
+# CVE-YYYY-NNNNN # owner=@team reason="..." created=YYYY-MM-DD expires=YYYY-MM-DD
+#
+# Example:
+# CVE-2025-12345 # owner=@backend reason="False positive in test-only path" created=2026-02-22 expires=2026-03-15
+
+# Temporary exceptions - versions not yet available in Maven Central
+CVE-2025-59952 # owner=@backend reason="MinIO 8.6.0 not yet available in Maven Central" created=2026-02-23 expires=2026-03-31
+CVE-2025-22235 # owner=@backend reason="Spring Boot 3.4.5 not yet available in Maven Central" created=2026-02-23 expires=2026-03-31
+CVE-2025-41249 # owner=@backend reason="Fixed in Spring Core 6.2.11, waiting for Spring Boot parent update" created=2026-02-23 expires=2026-03-31
+

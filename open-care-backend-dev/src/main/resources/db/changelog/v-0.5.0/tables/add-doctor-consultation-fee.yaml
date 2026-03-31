@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-doctor-consultation-fee-columns-20260322
+      author: abhinav
+      changes:
+        - addColumn:
+            tableName: doctor
+            columns:
+              - column:
+                  name: consultation_fee_online
+                  type: decimal(10,2)
+                  defaultValueNumeric: 0
+                  remarks: "Online consultation fee in INR"
+              - column:
+                  name: consultation_fee_offline
+                  type: decimal(10,2)
+                  defaultValueNumeric: 0
+                  remarks: "In-person consultation fee in INR"

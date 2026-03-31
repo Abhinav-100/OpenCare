@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: v-0.8.1-payment-idempotency-constraints
+      author: codex
+      changes:
+        - addUniqueConstraint:
+            tableName: payments
+            columnNames: bill_id, gateway_txn_id
+            constraintName: uk_payments_bill_gateway_txn

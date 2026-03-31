@@ -1,0 +1,191 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-doctor-schedule-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: doctor_schedule
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: doctor_schedule_id_pk
+
+              - column:
+                  name: doctor_id
+                  type: int8
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: doctor_workplace_id
+                  type: int8
+
+              - column:
+                  name: day_of_week
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                  remarks: "MONDAY, TUESDAY, etc."
+
+              - column:
+                  name: start_time
+                  type: time
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: end_time
+                  type: time
+                  constraints:
+                    nullable: false
+
+              # NEW: Activity type field
+              - column:
+                  name: activity_type
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+                  remarks: "PATIENT_VISIT, TEACHING, OPERATION, RESEARCH, ADMINISTRATIVE"
+
+              # NEW: Appointment availability for patient visits
+              - column:
+                  name: appointment_type
+                  type: varchar(20)
+                  remarks: "ONLINE, OFFLINE, BOTH - Only for PATIENT_VISIT activities"
+
+              # NEW: Booking availability based on hospital affiliation
+              - column:
+                  name: is_bookable
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Can patients book appointments for this schedule"
+
+              - column:
+                  name: slot_duration_minutes
+                  type: int4
+                  defaultValueNumeric: 30
+                  remarks: "Only applicable for PATIENT_VISIT"
+
+              - column:
+                  name: consultation_fee
+                  type: decimal(10,2)
+                  remarks: "Only applicable for bookable PATIENT_VISIT"
+
+              - column:
+                  name: max_slots_per_session
+                  type: int4
+                  defaultValueNumeric: 10
+                  remarks: "Only applicable for PATIENT_VISIT"
+
+              # NEW: Activity description
+              - column:
+                  name: activity_description
+                  type: varchar(500)
+                  remarks: "Description of the activity (e.g., Surgery Type, Course Name)"
+
+              # NEW: Department/Unit information
+              - column:
+                  name: department
+                  type: varchar(100)
+                  remarks: "Department or unit (e.g., Cardiology, Surgery, Medicine)"
+
+              - column:
+                  name: effective_from
+                  type: date
+                  defaultValueComputed: 'CURRENT_DATE'
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: effective_to
+                  type: date
+                  remarks: "NULL for indefinite"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: doctor_id
+            baseTableName: doctor_schedule
+            constraintName: doctor_schedule_fk_doctor
+            onUpdate: CASCADE
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: doctor
+
+        - addForeignKeyConstraint:
+            baseColumnNames: doctor_workplace_id
+            baseTableName: doctor_schedule
+            constraintName: doctor_schedule_fk_doctor_workplace
+            onUpdate: CASCADE
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: doctor_workplace
+
+        - createIndex:
+            indexName: idx_doctor_schedule_doctor_activity
+            tableName: doctor_schedule
+            columns:
+              - column:
+                  name: doctor_id
+              - column:
+                  name: activity_type
+              - column:
+                  name: day_of_week
+
+        - createIndex:
+            indexName: idx_doctor_schedule_bookable
+            tableName: doctor_schedule
+            columns:
+              - column:
+                  name: is_bookable
+
+        - createIndex:
+            indexName: idx_doctor_schedule_department
+            tableName: doctor_schedule
+            columns:
+              - column:
+                  name: department
+
+        - addUniqueConstraint:
+            columnNames: doctor_id, day_of_week, start_time, activity_type
+            constraintName: uk_doctor_schedule_unique
+            tableName: doctor_schedule

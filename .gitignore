@@ -1,0 +1,68 @@
+# --------------------------------------------------
+# OpenCare Full-Stack .gitignore (root)
+# Backend: Spring Boot (Maven)
+# Frontend: Next.js / React
+# --------------------------------------------------
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --------------------------------------------------
+# Backend (Spring Boot / Maven)
+# --------------------------------------------------
+**/target/
+**/build/
+
+# Extra local backend copy folder (do not version)
+open-care-backend-dev/bin/
+
+# --------------------------------------------------
+# Frontend (Next.js)
+# --------------------------------------------------
+open-care-frontend-dev/node_modules/
+open-care-frontend-dev/.next/
+open-care-frontend-dev/out/
+open-care-frontend-dev/coverage/
+open-care-frontend-dev/dist/
+open-care-frontend-dev/build/
+open-care-frontend-dev/.turbo/
+*.tsbuildinfo
+
+# Yarn modern cache (if used)
+open-care-frontend-dev/.yarn/*
+!open-care-frontend-dev/.yarn/patches
+!open-care-frontend-dev/.yarn/plugins
+!open-care-frontend-dev/.yarn/releases
+!open-care-frontend-dev/.yarn/versions
+
+# Keep Next.js type helper tracked
+!open-care-frontend-dev/next-env.d.ts
+
+# --------------------------------------------------
+# Env / secrets
+# --------------------------------------------------
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.sample
+!**/.env.template
+
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12

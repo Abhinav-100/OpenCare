@@ -1,0 +1,125 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-doctor-table
+      author: sadman
+      validCheckSum: "ANY"
+      changes:
+        - createTable:
+            tableName: doctor
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: doctor_id_pk
+                  remarks: "Primary key identifier"
+              - column:
+                  name: profile_id
+                  type: int8
+                  constraints:
+                    nullable: false
+                  remarks: "Reference to profile"
+              - column:
+                  name: bmdc_no
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: uk_doctor_bmdc_no
+                  remarks: "BMDC registration number"
+              - column:
+                  name: degrees
+                  type: varchar(250)
+                  remarks: "Degrees or qualifications"
+              - column:
+                  name: specializations
+                  type: varchar(250)
+                  remarks: "Specializations"
+              - column:
+                  name: start_date
+                  type: date
+                  remarks: "Start date of practice"
+              - column:
+                  name: description
+                  type: text
+                  remarks: "Additional description"
+              - column:
+                  name: is_verified
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the doctor is verified"
+              - column:
+                  name: is_affiliated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                      nullable: false
+                  remarks: "Indicates if the doctor is affiliated with OpenCare"
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the doctor is active"
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+        - addForeignKeyConstraint:
+            baseColumnNames: profile_id
+            baseTableName: doctor
+            constraintName: doctor_fk_profile
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: profile
+            validate: true
+        - createIndex:
+            tableName: doctor
+            indexName: idx_doctor_bmdc_no
+            columns:
+              - column:
+                  name: bmdc_no
+        - createIndex:
+            tableName: doctor
+            indexName: idx_doctor_verification
+            columns:
+              - column:
+                  name: is_verified
+              - column:
+                  name: is_active
+        - createIndex:
+            tableName: doctor
+            indexName: idx_doctor_profile
+            columns:
+              - column:
+                  name: profile_id

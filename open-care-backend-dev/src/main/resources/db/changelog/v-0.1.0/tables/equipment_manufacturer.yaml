@@ -1,0 +1,111 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-equipment-manufacturer-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: equipment_manufacturer
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: "Primary key identifier"
+
+              - column:
+                  name: manufacturer_code
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                  remarks: "Unique manufacturer code identifier"
+
+              - column:
+                  name: company_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks: "Official company name"
+
+              - column:
+                  name: contact_email
+                  type: varchar(255)
+                  remarks: "Primary contact email address"
+
+              - column:
+                  name: contact_phone
+                  type: varchar(50)
+                  remarks: "Primary contact phone number"
+
+              - column:
+                  name: website
+                  type: varchar(255)
+                  remarks: "Official company website URL"
+
+              - column:
+                  name: country
+                  type: varchar(100)
+                  remarks: "Country where company is headquartered"
+
+              - column:
+                  name: headquarters_address
+                  type: text
+                  remarks: "Complete headquarters address"
+
+              - column:
+                  name: specialization_categories
+                  type: jsonb
+                  remarks: "JSON array of equipment categories company specializes in"
+
+              - column:
+                  name: product_lines
+                  type: jsonb
+                  remarks: "JSON array of major product lines"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the manufacturer is currently active"
+
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        - createIndex:
+            tableName: equipment_manufacturer
+            indexName: idx_manufacturer_code
+            columns:
+              - column:
+                  name: manufacturer_code
+            unique: true
+
+        - createIndex:
+            tableName: equipment_manufacturer
+            indexName: idx_manufacturer_company_name
+            columns:
+              - column:
+                  name: company_name
+
+        - createIndex:
+            tableName: equipment_manufacturer
+            indexName: idx_manufacturer_specialization
+            columns:
+              - column:
+                  name: specialization_categories
+            using: gin

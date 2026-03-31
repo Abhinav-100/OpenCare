@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: indexes/payment-ledger-indexes.yaml
+      relativeToChangelogFile: true
+

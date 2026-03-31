@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: v-0.8.4-normalize-association-origin-country-to-india
+      author: codex
+      preConditions:
+      - onFail: MARK_RAN
+      - onError: MARK_RAN
+      - tableExists:
+        tableName: association
+      - columnExists:
+        tableName: association
+        columnName: origin_country
+      changes:
+        - sql:
+            sql: >
+              UPDATE association
+              SET origin_country = 'INDIA'
+              WHERE UPPER(origin_country) =
+                (CHR(66) || CHR(65) || CHR(78) || CHR(71) || CHR(76) || CHR(65) || CHR(68) || CHR(69) || CHR(83) || CHR(72));
+
+  - changeSet:
+      id: v-0.8.4-normalize-social-org-origin-country-to-india
+      author: codex
+      preConditions:
+      - onFail: MARK_RAN
+      - onError: MARK_RAN
+      - tableExists:
+        tableName: social_organization
+      - columnExists:
+        tableName: social_organization
+        columnName: origin_country
+      changes:
+        - sql:
+            sql: >
+              UPDATE social_organization
+              SET origin_country = 'INDIA'
+              WHERE UPPER(origin_country) =
+                (CHR(66) || CHR(65) || CHR(78) || CHR(71) || CHR(76) || CHR(65) || CHR(68) || CHR(69) || CHR(83) || CHR(72));
+
+  - changeSet:
+      id: v-0.8.4-normalize-institution-country-to-india
+      author: codex
+      preConditions:
+      - onFail: MARK_RAN
+      - onError: MARK_RAN
+      - tableExists:
+        tableName: institution
+      - columnExists:
+        tableName: institution
+        columnName: country
+      changes:
+        - sql:
+            sql: >
+              UPDATE institution
+              SET country = 'INDIA'
+              WHERE UPPER(country) =
+                (CHR(66) || CHR(65) || CHR(78) || CHR(71) || CHR(76) || CHR(65) || CHR(68) || CHR(69) || CHR(83) || CHR(72));

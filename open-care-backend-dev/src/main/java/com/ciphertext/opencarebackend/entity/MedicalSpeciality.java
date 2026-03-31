@@ -1,0 +1,39 @@
+package com.ciphertext.opencarebackend.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * @author Sadman
+ */
+@Getter
+@Setter
+@Entity
+@Table(name="medical_speciality")
+public class MedicalSpeciality {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "parent_id")
+    private Integer parentId;
+
+    @Column(name="name", nullable = false)
+    private String name;
+
+    @Column(name="bn_name", nullable = false)
+    private String bnName;
+
+    @Column(name="icon")
+    private String icon;
+
+    @Column(name="image_url")
+    private String imageUrl;
+
+    @Column(name="description")
+    private String description;
+
+    @Column(name="doctor_count", nullable = false)
+    private Integer doctorCount = 0;
+}

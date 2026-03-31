@@ -1,0 +1,19 @@
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+
+COPY package.json package-lock.json* ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 5175
+
+# CMD ["npm", "run", "dev", "--", "--host", "--port", "5175"]
+CMD ["npm", "start"]

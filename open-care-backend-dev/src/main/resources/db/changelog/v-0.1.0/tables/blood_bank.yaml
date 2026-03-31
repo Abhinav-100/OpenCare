@@ -1,0 +1,171 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-blood-bank-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blood_bank
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: blood_bank_id_pk
+                  remarks: "Primary key identifier for blood bank"
+
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks: "Blood bank name"
+
+              - column:
+                  name: license_no
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+                    unique: true
+                  remarks: "Government license number"
+
+              - column:
+                  name: contact_number
+                  type: varchar(50)
+                  remarks: "Primary contact number"
+
+              - column:
+                  name: email
+                  type: varchar(150)
+                  remarks: "Primary email"
+
+              - column:
+                  name: address
+                  type: varchar(500)
+                  remarks: "Full address"
+
+              - column:
+                  name: latitude
+                  type: decimal(10,8)
+                  remarks: "Latitude coordinate"
+
+              - column:
+                  name: longitude
+                  type: decimal(11,8)
+                  remarks: "Longitude coordinate"
+
+              - column:
+                  name: opening_hours
+                  type: varchar(255)
+                  remarks: "Working hours"
+
+              - column:
+                  name: is_always_open
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if blood bank is always open"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if blood bank is active"
+
+              - column:
+                  name: established_date
+                  type: date
+                  remarks: "Date blood bank was established"
+
+              - column:
+                  name: hospital_id
+                  type: bigint
+                  remarks: "Reference to hospital, if affiliated"
+
+              - column:
+                  name: social_org_id
+                  type: bigint
+                  remarks: "Reference to social organization, if affiliated"
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "Record created by user"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Creation timestamp"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "Last updated by user"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Last update timestamp"
+
+        - addForeignKeyConstraint:
+            baseTableName: blood_bank
+            baseColumnNames: hospital_id
+            constraintName: fk_blood_bank_hospital
+            referencedTableName: hospital
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: blood_bank
+            baseColumnNames: social_org_id
+            constraintName: fk_blood_bank_social_org
+            referencedTableName: social_organization
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - createIndex:
+            tableName: blood_bank
+            indexName: idx_blood_bank_name
+            columns:
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: blood_bank
+            indexName: idx_blood_bank_license
+            columns:
+              - column:
+                  name: license_no
+            unique: true
+
+        - createIndex:
+            tableName: blood_bank
+            indexName: idx_blood_bank_hospital
+            columns:
+              - column:
+                  name: hospital_id
+
+        - createIndex:
+            tableName: blood_bank
+            indexName: idx_blood_bank_social_org
+            columns:
+              - column:
+                  name: social_org_id

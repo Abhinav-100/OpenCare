@@ -1,0 +1,169 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-equipment-type-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: equipment_type
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: "Primary key identifier"
+
+              - column:
+                  name: category
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  remarks: "Equipment category from EquipmentCategory enum"
+
+              - column:
+                  name: type_code
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                  remarks: "Unique equipment type code identifier"
+
+              - column:
+                  name: type_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks: "Equipment type name"
+
+              - column:
+                  name: description
+                  type: text
+                  remarks: "Detailed description of the equipment type"
+
+              - column:
+                  name: typical_duration_minutes
+                  type: integer
+                  remarks: "Typical procedure duration in minutes"
+
+              - column:
+                  name: prep_time_minutes
+                  type: integer
+                  remarks: "Preparation time required in minutes"
+
+              - column:
+                  name: requires_contrast
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether contrast agent is required"
+
+              - column:
+                  name: requires_fasting
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether patient fasting is required"
+
+              - column:
+                  name: requires_sedation
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether sedation is required"
+
+              - column:
+                  name: has_radiation
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether procedure involves radiation"
+
+              - column:
+                  name: patient_age_min
+                  type: integer
+                  defaultValue: 0
+                  remarks: "Minimum patient age in years"
+
+              - column:
+                  name: patient_age_max
+                  type: integer
+                  defaultValue: 120
+                  remarks: "Maximum patient age in years"
+
+              - column:
+                  name: patient_weight_limit_kg
+                  type: decimal(5,2)
+                  remarks: "Maximum patient weight limit in kg"
+
+              - column:
+                  name: manufacturer_compatibility
+                  type: jsonb
+                  remarks: "JSON array of compatible manufacturer codes"
+
+              - column:
+                  name: technical_specifications
+                  type: jsonb
+                  remarks: "JSON object containing technical specifications"
+
+              - column:
+                  name: safety_warnings
+                  type: jsonb
+                  remarks: "JSON array of safety warnings and contraindications"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the equipment type is currently active"
+
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        - createIndex:
+            tableName: equipment_type
+            indexName: idx_equipment_type_code
+            columns:
+              - column:
+                  name: type_code
+            unique: true
+
+        - createIndex:
+            tableName: equipment_type
+            indexName: idx_equipment_type_category
+            columns:
+              - column:
+                  name: category
+
+        - createIndex:
+            tableName: equipment_type
+            indexName: idx_equipment_type_name
+            columns:
+              - column:
+                  name: type_name
+
+        - createIndex:
+            tableName: equipment_type
+            indexName: idx_equipment_type_manufacturer_compatibility
+            columns:
+              - column:
+                  name: manufacturer_compatibility
+            using: gin

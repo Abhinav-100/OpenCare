@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 9e0a2008-6445-4f9f-ac5f-02b8e637aa55
+      author: sadman
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: medical_speciality_id_pk
+                  name: id
+                  type: serial
+                  startWith: 197
+              - column:
+                  name: parent_id
+                  type: int4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: varchar(100)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: bn_name
+                  type: varchar(100)
+              - column:
+                  name: icon
+                  type: varchar(100)
+              - column:
+                  name: image_url
+                  type: varchar(250)
+              - column:
+                  name: description
+                  type: varchar(200)
+              - column:
+                  name: doctor_count
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+            tableName: medical_speciality

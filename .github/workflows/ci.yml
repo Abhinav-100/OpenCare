@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Backend build and test
+        working-directory: open-care-backend-dev
+        run: |
+          chmod +x mvnw
+          ./mvnw -B test
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+          cache-dependency-path: open-care-frontend-dev/yarn.lock
+
+      - name: Frontend install and test
+        working-directory: open-care-frontend-dev
+        run: |
+          corepack enable
+          yarn install --frozen-lockfile
+          yarn test
