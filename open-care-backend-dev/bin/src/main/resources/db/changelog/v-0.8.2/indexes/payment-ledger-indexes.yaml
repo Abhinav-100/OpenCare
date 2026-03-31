@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: v-0.8.2-payment-ledger-indexes
+      author: codex
+      changes:
+        - createIndex:
+            tableName: payments
+            indexName: idx_payments_bill_status_paid_at
+            columns:
+              - column:
+                  name: bill_id
+              - column:
+                  name: payment_status
+              - column:
+                  name: paid_at

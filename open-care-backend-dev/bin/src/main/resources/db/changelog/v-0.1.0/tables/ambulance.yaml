@@ -1,0 +1,170 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ambulance-table
+      author: amin
+      validCheckSum: "ANY"
+      changes:
+        - createTable:
+            tableName: ambulance
+            remarks: "Table to store ambulance information including vehicle details, driver information, and operational status"
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: "Primary key identifier for the ambulance record"
+              - column:
+                  name: vehicle_number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+                  remarks: "Unique registration/license plate number of the ambulance vehicle"
+              - column:
+                  name: type
+                  type: VARCHAR(50)
+                  remarks: "Type/category of the ambulance (e.g., Basic, Advanced, Mobile ICU)"
+              - column:
+                  name: driver_name
+                  type: VARCHAR(100)
+                  remarks: "Full name of the ambulance driver"
+              - column:
+                  name: driver_phone
+                  type: VARCHAR(20)
+                  remarks: "Contact phone number of the ambulance driver"
+              - column:
+                  name: is_available
+                  type: BOOLEAN
+                  defaultValue: true
+                  remarks: "Flag indicating if the ambulance is currently available for dispatch"
+              - column:
+                  name: is_affiliated
+                  type: boolean
+                  defaultValueBoolean: false
+                  remarks: "Flag indicating if the ambulance is affiliated with OpenCare"
+              - column:
+                  name: hospital_id
+                  type: int4
+                  remarks: "Reference to the hospital this ambulance is associated with"
+              - column:
+                  name: upazila_id
+                  type: int4
+                  remarks: "Reference to the upazila (sub-district) where the ambulance is primarily located"
+              - column:
+                  name: district_id
+                  type: int4
+                  remarks: "Reference to the district where the ambulance is primarily located"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: "Flag indicating if the ambulance record is active (soft delete)"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  remarks: "User/system who created this record"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  remarks: "Timestamp when this record was created"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  remarks: "User/system who last updated this record"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  remarks: "Timestamp when this record was last updated"
+        - addForeignKeyConstraint:
+            baseColumnNames: hospital_id
+            baseTableName: ambulance
+            referencedColumnNames: id
+            referencedTableName: hospital
+            constraintName: fk_ambulance_hospital
+            remarks: "Foreign key relationship to hospital table"
+        - addForeignKeyConstraint:
+            baseColumnNames: upazila_id
+            baseTableName: ambulance
+            referencedColumnNames: id
+            referencedTableName: upazila
+            constraintName: fk_ambulance_upazila
+            remarks: "Foreign key relationship to upazila table"
+        - addForeignKeyConstraint:
+            baseColumnNames: district_id
+            baseTableName: ambulance
+            referencedColumnNames: id
+            referencedTableName: district
+            constraintName: fk_ambulance_district
+            remarks: "Foreign key relationship to district table"
+        - createIndex:
+            tableName: ambulance
+            indexName: idx_ambulance_vehicle_number
+            unique: true
+            remarks: "Unique index on vehicle number for quick lookup and duplicate prevention"
+            columns:
+              - column:
+                  name: vehicle_number
+        - createIndex:
+            tableName: ambulance
+            indexName: idx_ambulance_hospital
+            remarks: "Index for filtering ambulances by associated hospital"
+            columns:
+              - column:
+                  name: hospital_id
+        - createIndex:
+            tableName: ambulance
+            indexName: idx_ambulance_upazila
+            remarks: "Index for filtering ambulances by upazila location"
+            columns:
+              - column:
+                  name: upazila_id
+        - createIndex:
+            tableName: ambulance
+            indexName: idx_ambulance_district
+            remarks: "Index for filtering ambulances by district location"
+            columns:
+              - column:
+                  name: district_id
+        - createIndex:
+            tableName: ambulance
+            indexName: idx_ambulance_availability
+            remarks: "Composite index for querying available and active ambulances"
+            columns:
+              - column:
+                  name: is_available
+              - column:
+                  name: is_active
+        - createIndex:
+            tableName: ambulance
+            indexName: idx_ambulance_type
+            remarks: "Composite index for querying ambulances by type and active status"
+            columns:
+              - column:
+                  name: type
+              - column:
+                  name: is_active
+        - createIndex:
+            tableName: ambulance
+            indexName: idx_ambulance_driver_phone
+            remarks: "Composite index for querying ambulances by driver phone and active status"
+            columns:
+              - column:
+                  name: driver_phone
+              - column:
+                  name: is_active

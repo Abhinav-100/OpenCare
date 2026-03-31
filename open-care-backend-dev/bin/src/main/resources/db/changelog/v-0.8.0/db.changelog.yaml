@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: tables/hms-core-schema.yaml
+      relativeToChangelogFile: true

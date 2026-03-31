@@ -1,0 +1,897 @@
+databaseChangeLog:
+  - changeSet:
+      id: v-0.8.0-hms-core-schema
+      author: codex
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: roles_pk
+              - column:
+                  name: code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_roles_code
+              - column:
+                  name: name
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: users_pk
+              - column:
+                  name: email
+                  type: VARCHAR(160)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_users_email
+              - column:
+                  name: password_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: VARCHAR(20)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: uk_users_phone
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: assigned_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: user_roles
+            columnNames: user_id, role_id
+            constraintName: user_roles_pk
+
+        - createTable:
+            tableName: patients
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: patients_pk
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_patients_user_id
+              - column:
+                  name: mrn
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_patients_mrn
+              - column:
+                  name: date_of_birth
+                  type: DATE
+              - column:
+                  name: gender
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: blood_group
+                  type: VARCHAR(5)
+              - column:
+                  name: address
+                  type: TEXT
+              - column:
+                  name: emergency_contact_name
+                  type: VARCHAR(120)
+              - column:
+                  name: emergency_contact_phone
+                  type: VARCHAR(20)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: doctors
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: doctors_pk
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_doctors_user_id
+              - column:
+                  name: license_number
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_doctors_license_number
+              - column:
+                  name: specialization
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: department
+                  type: VARCHAR(120)
+              - column:
+                  name: years_experience
+                  type: INTEGER
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: consultation_fee
+                  type: NUMERIC(10,2)
+                  defaultValueNumeric: 0.00
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_available
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: appointments
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: appointments_pk
+              - column:
+                  name: appointment_number
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_appointments_number
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: scheduled_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration_minutes
+                  type: INTEGER
+                  defaultValueNumeric: 30
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: PENDING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reason
+                  type: TEXT
+              - column:
+                  name: diagnosis
+                  type: TEXT
+              - column:
+                  name: notes
+                  type: TEXT
+              - column:
+                  name: cancellation_reason
+                  type: TEXT
+              - column:
+                  name: cancelled_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: appointments
+            columnNames: patient_id, doctor_id, scheduled_at
+            constraintName: uk_appointments_patient_doctor_time
+
+        - createTable:
+            tableName: lab_tests
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: lab_tests_pk
+              - column:
+                  name: appointment_id
+                  type: BIGINT
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: test_code
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: test_name
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: REQUESTED
+                  constraints:
+                    nullable: false
+              - column:
+                  name: requested_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sample_collected_at
+                  type: TIMESTAMP
+              - column:
+                  name: completed_at
+                  type: TIMESTAMP
+              - column:
+                  name: notes
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: reports
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: reports_pk
+              - column:
+                  name: lab_test_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: uploaded_by_user_id
+                  type: BIGINT
+              - column:
+                  name: report_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_url
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: summary
+                  type: TEXT
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: AVAILABLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reported_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: bills
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: bills_pk
+              - column:
+                  name: bill_number
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_bills_number
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: appointment_id
+                  type: BIGINT
+              - column:
+                  name: bill_date
+                  type: DATE
+                  defaultValueComputed: CURRENT_DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_amount
+                  type: NUMERIC(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: discount_amount
+                  type: NUMERIC(10,2)
+                  defaultValueNumeric: 0.00
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tax_amount
+                  type: NUMERIC(10,2)
+                  defaultValueNumeric: 0.00
+                  constraints:
+                    nullable: false
+              - column:
+                  name: net_amount
+                  type: NUMERIC(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: UNPAID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: due_date
+                  type: DATE
+              - column:
+                  name: notes
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: payments
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: payments_pk
+              - column:
+                  name: bill_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: paid_by_user_id
+                  type: BIGINT
+              - column:
+                  name: payment_reference
+                  type: VARCHAR(100)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: uk_payments_reference
+              - column:
+                  name: amount
+                  type: NUMERIC(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_method
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_status
+                  type: VARCHAR(20)
+                  defaultValue: SUCCESS
+                  constraints:
+                    nullable: false
+              - column:
+                  name: paid_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gateway
+                  type: VARCHAR(50)
+              - column:
+                  name: gateway_txn_id
+                  type: VARCHAR(120)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: user_roles
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_user_roles_user
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: user_roles
+            baseColumnNames: role_id
+            referencedTableName: roles
+            referencedColumnNames: id
+            constraintName: fk_user_roles_role
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: patients
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_patients_user
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: doctors
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_doctors_user
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: appointments
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            constraintName: fk_appointments_patient
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: appointments
+            baseColumnNames: doctor_id
+            referencedTableName: doctors
+            referencedColumnNames: id
+            constraintName: fk_appointments_doctor
+            onDelete: RESTRICT
+
+        - addForeignKeyConstraint:
+            baseTableName: lab_tests
+            baseColumnNames: appointment_id
+            referencedTableName: appointments
+            referencedColumnNames: id
+            constraintName: fk_lab_tests_appointment
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            baseTableName: lab_tests
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            constraintName: fk_lab_tests_patient
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: lab_tests
+            baseColumnNames: doctor_id
+            referencedTableName: doctors
+            referencedColumnNames: id
+            constraintName: fk_lab_tests_doctor
+            onDelete: RESTRICT
+
+        - addForeignKeyConstraint:
+            baseTableName: reports
+            baseColumnNames: lab_test_id
+            referencedTableName: lab_tests
+            referencedColumnNames: id
+            constraintName: fk_reports_lab_test
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: reports
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            constraintName: fk_reports_patient
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: reports
+            baseColumnNames: uploaded_by_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_reports_uploaded_by
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            baseTableName: bills
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            constraintName: fk_bills_patient
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: bills
+            baseColumnNames: appointment_id
+            referencedTableName: appointments
+            referencedColumnNames: id
+            constraintName: fk_bills_appointment
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            baseTableName: payments
+            baseColumnNames: bill_id
+            referencedTableName: bills
+            referencedColumnNames: id
+            constraintName: fk_payments_bill
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: payments
+            baseColumnNames: paid_by_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_payments_paid_by
+            onDelete: SET NULL
+
+        - createIndex:
+            tableName: users
+            indexName: idx_users_status
+            columns:
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: user_roles
+            indexName: idx_user_roles_role
+            columns:
+              - column:
+                  name: role_id
+
+        - createIndex:
+            tableName: doctors
+            indexName: idx_doctors_specialization
+            columns:
+              - column:
+                  name: specialization
+
+        - createIndex:
+            tableName: doctors
+            indexName: idx_doctors_department
+            columns:
+              - column:
+                  name: department
+
+        - createIndex:
+            tableName: appointments
+            indexName: idx_appointments_patient
+            columns:
+              - column:
+                  name: patient_id
+
+        - createIndex:
+            tableName: appointments
+            indexName: idx_appointments_doctor
+            columns:
+              - column:
+                  name: doctor_id
+
+        - createIndex:
+            tableName: appointments
+            indexName: idx_appointments_status
+            columns:
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: appointments
+            indexName: idx_appointments_scheduled_at
+            columns:
+              - column:
+                  name: scheduled_at
+
+        - createIndex:
+            tableName: lab_tests
+            indexName: idx_lab_tests_patient_status
+            columns:
+              - column:
+                  name: patient_id
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: lab_tests
+            indexName: idx_lab_tests_appointment
+            columns:
+              - column:
+                  name: appointment_id
+
+        - createIndex:
+            tableName: reports
+            indexName: idx_reports_patient
+            columns:
+              - column:
+                  name: patient_id
+
+        - createIndex:
+            tableName: reports
+            indexName: idx_reports_status
+            columns:
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: bills
+            indexName: idx_bills_patient_status
+            columns:
+              - column:
+                  name: patient_id
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: bills
+            indexName: idx_bills_bill_date
+            columns:
+              - column:
+                  name: bill_date
+
+        - createIndex:
+            tableName: payments
+            indexName: idx_payments_bill
+            columns:
+              - column:
+                  name: bill_id
+
+        - createIndex:
+            tableName: payments
+            indexName: idx_payments_status
+            columns:
+              - column:
+                  name: payment_status
+
+        - createIndex:
+            tableName: payments
+            indexName: idx_payments_paid_at
+            columns:
+              - column:
+                  name: paid_at
+
+        - sql:
+            dbms: postgresql
+            sql: |
+              ALTER TABLE users
+                ADD CONSTRAINT chk_users_status
+                CHECK (status IN ('ACTIVE', 'INACTIVE', 'SUSPENDED'));
+
+              ALTER TABLE patients
+                ADD CONSTRAINT chk_patients_gender
+                CHECK (gender IN ('MALE', 'FEMALE', 'OTHER'));
+
+              ALTER TABLE doctors
+                ADD CONSTRAINT chk_doctors_experience
+                CHECK (years_experience >= 0),
+                ADD CONSTRAINT chk_doctors_fee
+                CHECK (consultation_fee >= 0);
+
+              ALTER TABLE appointments
+                ADD CONSTRAINT chk_appointments_duration
+                CHECK (duration_minutes > 0),
+                ADD CONSTRAINT chk_appointments_status
+                CHECK (status IN ('PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED', 'NO_SHOW'));
+
+              ALTER TABLE lab_tests
+                ADD CONSTRAINT chk_lab_tests_status
+                CHECK (status IN ('REQUESTED', 'SAMPLE_COLLECTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'));
+
+              ALTER TABLE reports
+                ADD CONSTRAINT chk_reports_status
+                CHECK (status IN ('AVAILABLE', 'AMENDED', 'RETRACTED'));
+
+              ALTER TABLE bills
+                ADD CONSTRAINT chk_bills_amounts
+                CHECK (
+                  total_amount >= 0 AND
+                  discount_amount >= 0 AND
+                  tax_amount >= 0 AND
+                  net_amount >= 0
+                ),
+                ADD CONSTRAINT chk_bills_status
+                CHECK (status IN ('UNPAID', 'PARTIAL', 'PAID', 'VOID'));
+
+              ALTER TABLE payments
+                ADD CONSTRAINT chk_payments_amount
+                CHECK (amount > 0),
+                ADD CONSTRAINT chk_payments_status
+                CHECK (payment_status IN ('PENDING', 'SUCCESS', 'FAILED', 'REFUNDED'));

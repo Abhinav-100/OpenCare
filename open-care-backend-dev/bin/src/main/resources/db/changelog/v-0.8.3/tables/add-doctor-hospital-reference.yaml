@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: v-0.8.3-add-doctor-hospital-reference
+      author: codex
+      changes:
+        - addColumn:
+            tableName: doctor
+            columns:
+              - column:
+                  name: hospital_id
+                  type: int4
+                  remarks: "Optional primary hospital for doctor"
+
+        - addForeignKeyConstraint:
+            baseTableName: doctor
+            baseColumnNames: hospital_id
+            referencedTableName: hospital
+            referencedColumnNames: id
+            constraintName: doctor_fk_hospital
+            onDelete: SET NULL
+            onUpdate: CASCADE
+
+        - createIndex:
+            tableName: doctor
+            indexName: idx_doctor_hospital
+            columns:
+              - column:
+                  name: hospital_id

@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+        id: create-advertisement-type-table
+        author: sadman
+        changes:
+          - createTable:
+              columns:
+                - column:
+                    constraints:
+                      nullable: false
+                      primaryKey: true
+                      primaryKeyName: advertisement_type_id_pk
+                    name: id
+                    type: serial
+                    startWith: 1
+                - column:
+                    constraints:
+                      nullable: false
+                      unique: true
+                    name: name
+                    type: varchar(100)
+                - column:
+                    constraints:
+                      nullable: false
+                    name: description
+                    type: varchar(255)
+                - column:
+                    constraints:
+                      nullable: false
+                    name: position
+                    type: varchar(50)
+                - column:
+                    constraints:
+                      nullable: false
+                    name: base_price
+                    type: decimal
+                - column:
+                    constraints:
+                      nullable: false
+                    name: duration_in_days
+                    type: integer
+                - column:
+                    constraints:
+                      nullable: false
+                    name: is_active
+                    type: boolean
+                    defaultValueBoolean: true
+                - column:
+                    constraints:
+                      nullable: false
+                    name: created_by
+                    type: varchar(100)
+                    defaultValue: 'admin'
+                - column:
+                    constraints:
+                      nullable: false
+                    name: created_at
+                    type: timestamp
+                    defaultValueComputed: 'CURRENT_TIMESTAMP'
+                - column:
+                    constraints:
+                      nullable: false
+                    name: updated_by
+                    type: varchar(100)
+                    defaultValue: 'admin'
+                - column:
+                    constraints:
+                      nullable: false
+                    name: updated_at
+                    type: timestamp
+                    defaultValueComputed: 'CURRENT_TIMESTAMP'
+              tableName: advertisement_type

@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: tables/add-doctor-consultation-fee.yaml
+      relativeToChangelogFile: true
+

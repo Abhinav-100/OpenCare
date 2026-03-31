@@ -1,0 +1,187 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-fundraising-campaign-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: fundraising_campaign
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: "Primary key identifier for fundraising campaign"
+
+              - column:
+                  name: patient_id
+                  type: bigint
+                  remarks: "Reference to patient table (if available)"
+
+              - column:
+                  name: hospital_id
+                  type: bigint
+                  remarks: "Reference to hospital table (if verified)"
+
+              - column:
+                  name: doctor_id
+                  type: bigint
+                  remarks: "Reference to doctor who verified treatment need"
+
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks: "Title of fundraising campaign"
+
+              - column:
+                  name: description
+                  type: varchar(2000)
+                  remarks: "Detailed story of patient and treatment need"
+
+              - column:
+                  name: goal_amount
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+                  remarks: "Target fundraising goal amount"
+
+              - column:
+                  name: raised_amount
+                  type: numeric(12,2)
+                  defaultValueNumeric: 0.00
+                  constraints:
+                    nullable: false
+                  remarks: "Amount raised so far"
+
+              - column:
+                  name: currency
+                  type: varchar(10)
+                  defaultValue: 'INR'
+                  constraints:
+                    nullable: false
+                  remarks: "Currency for fundraising"
+
+              - column:
+                  name: document_url
+                  type: varchar(500)
+                  remarks: "Medical certificate or cost estimate document URL"
+
+              - column:
+                  name: image_url
+                  type: varchar(500)
+                  remarks: "Image of patient or campaign"
+
+              - column:
+                  name: start_date
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  remarks: "Campaign start date"
+
+              - column:
+                  name: end_date
+                  type: timestamp
+                  remarks: "Campaign end/expiry date"
+
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: 'PENDING_VERIFICATION'
+                  constraints:
+                    nullable: false
+                  remarks: "Status: DRAFT, PENDING_VERIFICATION, ACTIVE, FUNDED, CLOSED"
+
+              - column:
+                  name: is_verified
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether verified by OpenCare team"
+
+              - column:
+                  name: total_donors
+                  type: int4
+                  defaultValueNumeric: 0
+                  remarks: "Total number of donors (incremental counter)"
+
+              - column:
+                  name: last_donation_date
+                  type: timestamp
+                  remarks: "Timestamp of most recent donation"
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who created record"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp of creation"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who last updated record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp of last update"
+
+        - addForeignKeyConstraint:
+            baseTableName: fundraising_campaign
+            baseColumnNames: hospital_id
+            referencedTableName: hospital
+            referencedColumnNames: id
+            constraintName: fk_fundraising_hospital
+
+        - addForeignKeyConstraint:
+            baseTableName: fundraising_campaign
+            baseColumnNames: doctor_id
+            referencedTableName: doctor
+            referencedColumnNames: id
+            constraintName: fk_fundraising_doctor
+
+        - addForeignKeyConstraint:
+            baseTableName: fundraising_campaign
+            baseColumnNames: patient_id
+            referencedTableName: profile
+            referencedColumnNames: id
+            constraintName: fk_fundraising_patient
+
+        - createIndex:
+            tableName: fundraising_campaign
+            indexName: idx_fundraising_status
+            columns:
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: fundraising_campaign
+            indexName: idx_fundraising_goal
+            columns:
+              - column:
+                  name: goal_amount
+
+        - createIndex:
+            tableName: fundraising_campaign
+            indexName: idx_fundraising_hospital
+            columns:
+              - column:
+                  name: hospital_id

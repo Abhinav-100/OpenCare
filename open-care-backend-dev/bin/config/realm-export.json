@@ -1,0 +1,643 @@
+{
+  "realm": "opencare",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "identityProviders": [
+    {
+      "alias": "google",
+      "displayName": "Google",
+      "providerId": "google",
+      "enabled": true,
+      "updateProfileFirstLoginMode": "on",
+      "trustEmail": true,
+      "storeToken": false,
+      "addReadTokenRoleOnCreate": false,
+      "authenticateByDefault": false,
+      "linkOnly": false,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "clientId": "811254127841-uvg1vrkt40gcl9gr4p35tk7ldgfehe5h.apps.googleusercontent.com",
+        "clientSecret": "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",
+        "useJwksUrl": "true",
+        "defaultScope": "openid email profile",
+        "hostedDomain": ""
+      }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "open-care-frontend",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "attributes": {
+        "exclude.session.state.from.auth.response": "false",
+        "display.on.consent.screen": "false"
+      }
+    },
+    {
+      "clientId": "open-care-backend",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "u3L5IEUSLoBoPzFghcMUvdSJSUedr6Fm",
+      "redirectUris": [],
+      "webOrigins": [],
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "attributes": {},
+      "protocolMappers": [
+        {
+          "name": "user-attributes",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "claim.name": "user_attributes",
+            "user.attribute": "*",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "phone",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "claim.name": "phone",
+            "user.attribute": "phone",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "gender",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "claim.name": "gender",
+            "user.attribute": "gender",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "dob",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "claim.name": "dob",
+            "user.attribute": "dob",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "district_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "claim.name": "district_id",
+            "user.attribute": "district_id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "upazila_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "claim.name": "upazila_id",
+            "user.attribute": "upazila_id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "union_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "claim.name": "union_id",
+            "user.attribute": "union_id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "name": "super-admin",
+      "path": "/super-admin",
+      "realmRoles": [
+        "view-super-admin-panel",
+        "sync-data",
+        "create-doctor-user",
+        "assign-user-role",
+        "remove-user-role",
+        "create-master-data",
+        "update-master-data",
+        "delete-master-data",
+        "create-institution",
+        "update-institution",
+        "delete-institution",
+        "create-doctor",
+        "update-doctor",
+        "delete-doctor",
+        "create-nurse",
+        "update-nurse",
+        "delete-nurse",
+        "create-profile",
+        "update-profile",
+        "delete-profile",
+        "create-hospital",
+        "update-hospital",
+        "delete-hospital",
+        "create-hospital-amenity",
+        "update-hospital-amenity",
+        "delete-hospital-amenity",
+        "create-social-organization",
+        "update-social-organization",
+        "delete-social-organization",
+        "create-hospital-medical-test",
+        "update-hospital-medical-test",
+        "delete-hospital-medical-test"
+      ]
+    },
+    {
+      "name": "admin",
+      "path": "/admin",
+      "realmRoles": [
+        "view-admin-panel",
+        "create-master-data",
+        "update-master-data",
+        "delete-master-data",
+        "create-institution",
+        "update-institution",
+        "delete-institution",
+        "create-doctor",
+        "update-doctor",
+        "delete-doctor",
+        "create-nurse",
+        "update-nurse",
+        "delete-nurse",
+        "create-profile",
+        "update-profile",
+        "delete-profile",
+        "create-hospital",
+        "update-hospital",
+        "delete-hospital",
+        "create-social-organization",
+        "update-social-organization",
+        "delete-social-organization",
+        "create-hospital-medical-test",
+        "update-hospital-medical-test",
+        "delete-hospital-medical-test"
+      ]
+    },
+    {
+      "name": "moderator",
+      "path": "/moderator",
+      "realmRoles": [
+        "view-moderator-panel",
+        "create-institution",
+        "update-institution",
+        "delete-institution",
+        "create-doctor",
+        "update-doctor",
+        "delete-doctor",
+        "create-nurse",
+        "update-nurse",
+        "delete-nurse",
+        "create-profile",
+        "update-profile",
+        "delete-profile",
+        "create-hospital",
+        "update-hospital",
+        "delete-hospital",
+        "create-social-organization",
+        "update-social-organization",
+        "delete-social-organization",
+        "create-hospital-medical-test",
+        "update-hospital-medical-test",
+        "delete-hospital-medical-test"
+      ]
+    },
+    {
+      "name": "operator",
+      "path": "/operator",
+      "realmRoles": [
+        "view-operator-panel",
+        "create-doctor",
+        "update-doctor",
+        "delete-doctor",
+        "create-nurse",
+        "update-nurse",
+        "delete-nurse",
+        "create-profile",
+        "update-profile",
+        "delete-profile",
+        "create-hospital",
+        "update-hospital",
+        "delete-hospital",
+        "create-social-organization",
+        "update-social-organization",
+        "delete-social-organization",
+        "create-hospital-medical-test",
+        "update-hospital-medical-test",
+        "delete-hospital-medical-test"
+      ]
+    },
+    {
+      "name": "hospital-admin",
+      "path": "/hospital-admin"
+    },
+    {
+      "name": "social-organization-admin",
+      "path": "/social-organization-admin"
+    },
+    {
+      "name": "institution-admin",
+      "path": "/institution-admin"
+    },
+    {
+      "name": "association-admin",
+      "path": "/association-admin"
+    },
+    {
+      "name": "doctor",
+      "path": "/doctor"
+    },
+    {
+      "name": "nurse",
+      "path": "/nurse"
+    },
+    {
+      "name": "user",
+      "path": "/user"
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "sync-data",
+        "description": "Sync Data Permission"
+      },
+      {
+        "name": "create-doctor-user",
+        "description": "Create Doctor User Permission"
+      },
+      {
+        "name": "assign-user-role",
+        "description": "Assign User Role Permission"
+      },
+      {
+        "name": "remove-user-role",
+        "description": "Remove User Role Permission"
+      },
+      {
+        "name": "view-super-admin-panel",
+        "description": "View Super Admin Panel Permission"
+      },
+      {
+        "name": "view-admin-panel",
+        "description": "View Admin Panel Permission"
+      },
+      {
+        "name": "view-moderator-panel",
+        "description": "View Moderator Panel Permission"
+      },
+      {
+        "name": "view-operator-panel",
+        "description": "View Operator Panel Permission"
+      },
+      {
+        "name": "view-doctor-panel",
+        "description": "View Doctor Panel Permission"
+      },
+      {
+        "name": "view-hospital-admin-panel",
+        "description": "View Hospital Admin Panel Permission"
+      },
+      {
+        "name": "view-social-organization-admin-panel",
+        "description": "View Social Organization Admin Panel Permission"
+      },
+      {
+        "name": "view-institution-admin-panel",
+        "description": "View Institution Admin Panel Permission"
+      },
+      {
+        "name": "view-association-admin-panel",
+        "description": "View Association Admin Panel Permission"
+      },
+      {
+        "name": "create-master-data",
+        "description": "Create Master Data Permission"
+      },
+      {
+        "name": "update-master-data",
+        "description": "Update Master Data Permission"
+      },
+      {
+        "name": "delete-master-data",
+        "description": "Delete Master Data Permission"
+      },
+      {
+        "name": "create-institution",
+        "description": "Create Institution Permission"
+      },
+      {
+        "name": "update-institution",
+        "description": "Update Institution Permission"
+      },
+      {
+        "name": "delete-institution",
+        "description": "Delete Institution Permission"
+      },
+      {
+        "name": "create-doctor",
+        "description": "Create Doctor Permission"
+      },
+      {
+        "name": "update-doctor",
+        "description": "Update Doctor Permission"
+      },
+      {
+        "name": "delete-doctor",
+        "description": "Delete Doctor Permission"
+      },
+      {
+        "name": "create-nurse",
+        "description": "Create Nurse Permission"
+      },
+      {
+        "name": "update-nurse",
+        "description": "Update Nurse Permission"
+      },
+      {
+        "name": "delete-nurse",
+        "description": "Delete Nurse Permission"
+      },
+      {
+        "name": "create-profile",
+        "description": "Create Profile Permission"
+      },
+      {
+        "name": "update-profile",
+        "description": "Update Profile Permission"
+      },
+      {
+        "name": "delete-profile",
+        "description": "Delete Profile Permission"
+      },
+      {
+        "name": "create-hospital",
+        "description": "Create Hospital Permission"
+      },
+      {
+        "name": "update-hospital",
+        "description": "Update Hospital Permission"
+      },
+      {
+        "name": "delete-hospital",
+        "description": "Delete Hospital Permission"
+      },
+      {
+        "name": "create-hospital-amenity",
+        "description": "Create Hospital Amenity Permission"
+      },
+      {
+        "name": "update-hospital-amenity",
+        "description": "Update Hospital Amenity Permission"
+      },
+      {
+        "name": "delete-hospital-amenity",
+        "description": "Delete Hospital Amenity Permission"
+      },
+      {
+        "name": "create-ambulance",
+        "description": "Create Ambulance Permission"
+      },
+      {
+        "name": "update-ambulance",
+        "description": "Update Ambulance Permission"
+      },
+      {
+        "name": "delete-ambulance",
+        "description": "Delete Ambulance Permission"
+      },
+      {
+        "name": "create-social-organization",
+        "description": "Create Social Organization Permission"
+      },
+      {
+        "name": "update-social-organization",
+        "description": "Update Social Organization Permission"
+      },
+      {
+        "name": "delete-social-organization",
+        "description": "Delete Social Organization Permission"
+      },
+      {
+        "name": "create-hospital-medical-test",
+        "description": "Create Hospital Medical Test Permission"
+      },
+      {
+        "name": "update-hospital-medical-test",
+        "description": "Update Hospital Medical Test Permission"
+      },
+      {
+        "name": "delete-hospital-medical-test",
+        "description": "Delete Hospital Medical Test Permission"
+      }
+    ]
+  },
+  "users": [
+    {
+      "id": "f8d100c4-0225-4643-9b54-dff4aabbf21a",
+      "username": "superadmin",
+      "enabled": true,
+      "email": "superadmin@opencare.com",
+      "firstName": "Super",
+      "lastName": "Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "groups": [
+        "/super-admin"
+      ],
+      "attributes": {
+        "phone": "+919811123456",
+        "gender": "MALE",
+        "dob": "1990-01-01",
+        "district_id": "10",
+        "upazila_id": "20",
+        "union_id": "30"
+      }
+    },
+    {
+      "id": "89c8934c-dfd1-4313-bb9a-00672a7ec1fb",
+      "username": "admin",
+      "enabled": true,
+      "email": "admin@opencare.com",
+      "firstName": "Admin",
+      "lastName": "Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "groups": [
+        "/admin"
+      ],
+      "attributes": {
+        "phone": "+919811123457",
+        "gender": "MALE",
+        "dob": "1990-01-01",
+        "district_id": "10",
+        "upazila_id": "20",
+        "union_id": "30"
+      }
+    },
+    {
+      "id": "c1d2e3f4-5678-90ab-cdef-1234567890ab",
+      "username": "moderator",
+      "enabled": true,
+      "email": "moderator@opencare.com",
+      "firstName": "Moderator",
+      "lastName": "Moderator",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "groups": [
+        "/moderator"
+      ],
+      "attributes": {
+        "phone": "+919811123458",
+        "gender": "MALE",
+        "dob": "1990-01-01",
+        "district_id": "10",
+        "upazila_id": "20",
+        "union_id": "30"
+      }
+    },
+    {
+      "id": "d1e2f3g4-5678-90ab-cdef-1234567890ab",
+      "username": "operator",
+      "enabled": true,
+      "email": "operator@opencare.com",
+      "firstName": "Operator",
+      "lastName": "Operator",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "groups": [
+        "/operator"
+      ],
+      "attributes": {
+        "phone": "+919811123459",
+        "gender": "MALE",
+        "dob": "1990-01-01",
+        "district_id": "10",
+        "upazila_id": "20",
+        "union_id": "30"
+      }
+    },
+    {
+      "id": "e1f2g3h4-5678-90ab-cdef-1234567890ab",
+      "username": "hospital-admin",
+      "enabled": true,
+      "email": "hospital-admin@opencare.com",
+      "firstName": "Hospital",
+      "lastName": "Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "groups": [
+        "/hospital-admin"
+      ],
+      "attributes": {
+        "phone": "+919811123460",
+        "gender": "MALE",
+        "dob": "1990-01-01",
+        "district_id": "10",
+        "upazila_id": "20",
+        "union_id": "30"
+      }
+    },
+    {
+      "id": "f1g2h3i4-5678-90ab-cdef-1234567890ab",
+      "username": "social-organization-admin",
+      "enabled": true,
+      "email": "social-organization-admin@opencare.com",
+      "firstName": "Social",
+      "lastName": "Organization Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "groups": [
+        "/social-organization-admin"
+      ],
+      "attributes": {
+        "phone": "+919811123461",
+        "gender": "MALE",
+        "dob": "1990-01-01",
+        "district_id": "10",
+        "upazila_id": "20",
+        "union_id": "30"
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-profile_document-table
+      author: sadman
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: profile_document_id_pk
+                  name: id
+                  type: bigserial
+              - column:
+                  name: profile_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: document_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_url
+                  type: varchar(250)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+            tableName: profile_document

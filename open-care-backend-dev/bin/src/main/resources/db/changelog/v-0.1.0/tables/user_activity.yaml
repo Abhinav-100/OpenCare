@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-user-activity-table
+      author: sadman
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: profile_id
+                  type: int8
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: last_login_time
+                  type: TIMESTAMP
+              - column:
+                  name: last_logout_time
+                  type: TIMESTAMP
+              - column:
+                  name: last_activity_time
+                  type: TIMESTAMP
+              - column:
+                  name: last_login_ip
+                  type: VARCHAR(45)
+              - column:
+                  name: last_login_device
+                  type: VARCHAR(100)
+              - column:
+                  name: last_login_browser
+                  type: VARCHAR(100)
+              - column:
+                  name: last_login_operating_system
+                  type: VARCHAR(100)
+              - column:
+                  name: last_known_location
+                  type: GEOGRAPHY(POINT, 4326)
+              - column:
+                  name: total_logins
+                  type: INT
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_sessions
+                  type: INT
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: avg_session_duration
+                  type: INTERVAL
+              - column:
+                  name: ad_click_count
+                  type: INT
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_ad_seen
+                  type: TIMESTAMP
+              - column:
+                  name: last_ad_clicked
+                  type: TIMESTAMP
+            tableName: user_activity
+        - addForeignKeyConstraint:
+            baseColumnNames: profile_id
+            baseTableName: user_activity
+            constraintName: user_activity_fk_profile
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: profile
+            validate: true

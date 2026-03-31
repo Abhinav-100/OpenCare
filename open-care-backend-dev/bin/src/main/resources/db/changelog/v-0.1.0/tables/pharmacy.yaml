@@ -1,0 +1,253 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-pharmacy-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: pharmacy
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: pharmacy_id_pk
+                  remarks: "Primary key identifier for pharmacy"
+
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                  remarks: "Pharmacy name in English"
+
+              - column:
+                  name: bn_name
+                  type: varchar(100)
+                  remarks: "Pharmacy name in Bengali"
+
+              - column:
+                  name: license_no
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  remarks: "Government issued pharmacy license number"
+
+              - column:
+                  name: owner_name
+                  type: varchar(100)
+                  remarks: "Name of pharmacy owner"
+
+              - column:
+                  name: owner_phone
+                  type: varchar(50)
+                  remarks: "Owner phone number"
+
+              - column:
+                  name: owner_email
+                  type: varchar(100)
+                  remarks: "Owner email address"
+
+              - column:
+                  name: image_url
+                  type: varchar(250)
+                  remarks: "URL to pharmacy image/logo"
+
+              - column:
+                  name: district_id
+                  type: int4
+                  constraints:
+                    nullable: false
+                  remarks: "Reference to district location"
+
+              - column:
+                  name: upazila_id
+                  type: int4
+                  remarks: "Reference to upazila location"
+
+              - column:
+                  name: union_id
+                  type: int4
+                  remarks: "Reference to union location"
+
+              - column:
+                  name: email
+                  type: varchar(100)
+                  remarks: "Primary contact email"
+
+              - column:
+                  name: phone
+                  type: varchar(100)
+                  remarks: "Primary contact phone number"
+
+              - column:
+                  name: address
+                  type: varchar(500)
+                  remarks: "Full address of the pharmacy"
+
+              - column:
+                  name: lat
+                  type: varchar(100)
+                  remarks: "Latitude coordinate for location"
+
+              - column:
+                  name: lon
+                  type: varchar(100)
+                  remarks: "Longitude coordinate for location"
+
+              - column:
+                  name: website_url
+                  type: varchar(500)
+                  remarks: "Official website URL"
+
+              - column:
+                  name: has_home_delivery
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether pharmacy provides home delivery service"
+
+              - column:
+                  name: is_always_open
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether pharmacy is open always"
+
+              - column:
+                  name: is_online_order_supported
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether pharmacy supports online ordering"
+
+              - column:
+                  name: is_affiliated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the pharmacy is affiliated with OpenCare"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the pharmacy is active"
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        - addForeignKeyConstraint:
+            baseColumnNames: district_id
+            baseTableName: pharmacy
+            constraintName: pharmacy_fk_district
+            referencedColumnNames: id
+            referencedTableName: district
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: upazila_id
+            baseTableName: pharmacy
+            constraintName: pharmacy_fk_upazila
+            referencedColumnNames: id
+            referencedTableName: upazila
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: union_id
+            baseTableName: pharmacy
+            constraintName: pharmacy_fk_union
+            referencedColumnNames: id
+            referencedTableName: union
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - createIndex:
+            tableName: pharmacy
+            indexName: idx_pharmacy_name
+            columns:
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: pharmacy
+            indexName: idx_pharmacy_license
+            columns:
+              - column:
+                  name: license_no
+            unique: true
+
+        - createIndex:
+            tableName: pharmacy
+            indexName: idx_pharmacy_district
+            columns:
+              - column:
+                  name: district_id
+
+        - createIndex:
+            tableName: pharmacy
+            indexName: idx_pharmacy_upazila
+            columns:
+              - column:
+                  name: upazila_id
+
+        - createIndex:
+            tableName: pharmacy
+            indexName: idx_pharmacy_union
+            columns:
+              - column:
+                  name: union_id
+
+        - createIndex:
+            tableName: pharmacy
+            indexName: idx_pharmacy_location
+            columns:
+              - column:
+                  name: lat
+              - column:
+                  name: lon
+
+        - createIndex:
+            tableName: pharmacy
+            indexName: idx_pharmacy_affiliation
+            columns:
+              - column:
+                  name: is_affiliated

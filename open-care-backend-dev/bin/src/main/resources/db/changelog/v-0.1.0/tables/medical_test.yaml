@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: e65af50f-37f2-4ea3-b0fd-f876cb8cf4a7
+      author: sadman
+      changes:
+        - createTable:
+            tableName: medical_test
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  startWith: 633
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: medical_test_id_pk
+                  remarks: "Primary key identifier"
+              - column:
+                  name: parent_id
+                  type: int4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: varchar(100)
+                  remarks: "Medical test name in English"
+              - column:
+                  name: bn_name
+                  type: varchar(100)
+                  remarks: "Medical test name in Bangla"
+              - column:
+                  name: alternative_names
+                  type: varchar(500)
+                  remarks: "Other possible names for the medical test"
+              - column:
+                  name: description
+                  type: varchar(500)
+                  remarks: "Description or details about the medical test"
+              - column:
+                  name: hospital_count
+                  type: int4
+                  defaultValue: 0
+                  constraints:
+                    nullable: true
+                  remarks: "Number of hospitals offering this medical test"
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+                  constraints:
+                    nullable: false
+                  remarks: "Record creation timestamp"
+              - column:
+                 name: updated_at
+                 type: timestamp
+                 defaultValueComputed: "CURRENT_TIMESTAMP"
+                 constraints:
+                   nullable: false
+                 remarks: "Record last update timestamp"

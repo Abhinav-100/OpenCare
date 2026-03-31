@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-prescription-medicine-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: prescription_medicine
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: prescription_medicine_pk
+                    nullable: false
+              - column:
+                  name: prescription_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: medicine_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dosage
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: frequency
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: instructions
+                  type: text
+              - column:
+                  name: meal_instruction
+                  type: varchar(50)
+              - column:
+                  name: quantity
+                  type: integer
+              - column:
+                  name: is_active
+                  type: boolean
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: true
+
+        - addForeignKeyConstraint:
+            baseColumnNames: prescription_id
+            baseTableName: prescription_medicine
+            constraintName: prescription_medicine_fk_prescription
+            referencedColumnNames: id
+            referencedTableName: prescription
+            onUpdate: CASCADE
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: medicine_id
+            baseTableName: prescription_medicine
+            constraintName: prescription_medicine_fk_medicine
+            referencedColumnNames: id
+            referencedTableName: medicine
+            onUpdate: CASCADE
+
+        - createIndex:
+            tableName: prescription_medicine
+            indexName: idx_prescription_medicine_prescription
+            columns:
+              - column:
+                  name: prescription_id
+
+        - createIndex:
+            tableName: prescription_medicine
+            indexName: idx_prescription_medicine_medicine
+            columns:
+              - column:
+                  name: medicine_id

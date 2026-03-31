@@ -1,0 +1,297 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-institution-table
+      author: sadman
+      validCheckSum: "ANY"
+      changes:
+        - createTable:
+            tableName: institution
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  startWith: 224
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: institution_id_pk
+                  remarks: "Primary key identifier for institution"
+
+              - column:
+                  name: acronym
+                  type: varchar(10)
+                  remarks: "Short acronym of the institution"
+
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                  remarks: "Institution name in English"
+
+              - column:
+                  name: bn_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                  remarks: "Institution name in Bengali"
+
+              - column:
+                  name: logo_url
+                  type: varchar(250)
+                  remarks: "URL to institution logo"
+
+              - column:
+                  name: image_url
+                  type: varchar(250)
+                  remarks: "URL to institution image"
+
+              - column:
+                  name: established_year
+                  type: int4
+                  remarks: "Year when the institution was established"
+
+              - column:
+                  name: enroll
+                  type: int4
+                  remarks: "Total enrollment/capacity of the institution"
+
+              - column:
+                  name: district_id
+                  type: int4
+                  remarks: "Reference to district location"
+
+              - column:
+                  name: upazila_id
+                  type: int4
+                  remarks: "Reference to upazila location"
+
+              - column:
+                  name: affiliated_hospital_id
+                  type: int4
+                  remarks: "Reference to affiliated hospital if applicable"
+
+              - column:
+                  name: country
+                  type: varchar(100)
+                  remarks: "Country where institution is located"
+
+              - column:
+                  name: institution_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  remarks: "Type of institution (e.g., UNIVERSITY, COLLEGE, SCHOOL)"
+
+              - column:
+                  name: organization_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  remarks: "Organization type (e.g., GOVERNMENT, PRIVATE, NGO)"
+
+              - column:
+                  name: email
+                  type: varchar(100)
+                  remarks: "Primary contact email"
+
+              - column:
+                  name: phone
+                  type: varchar(100)
+                  remarks: "Primary contact phone number"
+
+              - column:
+                  name: address
+                  type: varchar(500)
+                  remarks: "Full address of the institution"
+
+              # ✅ Plain lat/lon (easy to use/debug)
+              - column:
+                  name: lat
+                  type: numeric(12,9)
+                  remarks: "Latitude coordinate for location"
+              - column:
+                  name: lon
+                  type: numeric(12,9)
+                  remarks: "Longitude coordinate for location"
+
+              # ✅ PostGIS column (optimized spatial queries)
+              - column:
+                  name: location
+                  type: geography(Point,4326)
+                  remarks: "Geographic point (lon/lat) in WGS 84"
+
+              - column:
+                  name: website_url
+                  type: varchar(500)
+                  remarks: "Official website URL"
+
+              - column:
+                  name: is_affiliated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the institution is affiliated with OpenCare"
+
+#              Facilities:
+#              hasLibrary, hasLaboratory, hasSportsComplex, hasHostel, hasTransport
+
+              # ✅ Facilities
+              - column:
+                  name: has_library
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the institution has a library"
+              - column:
+                  name: has_laboratory
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the institution has a laboratory"
+              - column:
+                  name: has_sports_complex
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                      nullable: false
+                  remarks: "Indicates if the institution has a sports complex"
+              - column:
+                  name: has_hostel
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the institution has a hostel"
+              - column:
+                  name: has_transport
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the institution has transport facilities"
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        # Foreign Keys
+        - addForeignKeyConstraint:
+            baseColumnNames: district_id
+            baseTableName: institution
+            constraintName: institution_fk_district
+            referencedColumnNames: id
+            referencedTableName: district
+
+        - addForeignKeyConstraint:
+            baseColumnNames: upazila_id
+            baseTableName: institution
+            constraintName: institution_fk_upazila
+            referencedColumnNames: id
+            referencedTableName: upazila
+
+        - addForeignKeyConstraint:
+            baseColumnNames: affiliated_hospital_id
+            baseTableName: institution
+            constraintName: institution_fk_affiliated_hospital
+            referencedColumnNames: id
+            referencedTableName: hospital
+
+        # Indexes
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_name
+            columns:
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_acronym
+            columns:
+              - column:
+                  name: acronym
+
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_district
+            columns:
+              - column:
+                  name: district_id
+
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_type
+            columns:
+              - column:
+                  name: institution_type
+              - column:
+                  name: organization_type
+
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_affiliation
+            columns:
+              - column:
+                  name: is_affiliated
+
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_established
+            columns:
+              - column:
+                  name: established_year
+
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_enrollment
+            columns:
+              - column:
+                  name: enroll
+
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_country
+            columns:
+              - column:
+                  name: country
+
+        # ✅ Spatial index for PostGIS
+        - createIndex:
+            tableName: institution
+            indexName: idx_institution_location_gist
+            columns:
+              - column:
+                  name: location
+            clustered: false

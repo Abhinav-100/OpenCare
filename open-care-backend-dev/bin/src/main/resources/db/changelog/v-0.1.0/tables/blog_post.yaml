@@ -1,0 +1,720 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-blog-category-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_category
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: blog_category_pk
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slug
+                  type: varchar(120)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: category_image
+                  type: varchar(500)
+              - column:
+                  name: color_code
+                  type: varchar(7)
+              - column:
+                  name: sort_order
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: meta_title
+                  type: varchar(255)
+              - column:
+                  name: meta_description
+                  type: text
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the association is currently active"
+
+              - column:
+                  name: created_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+  - changeSet:
+      id: create-blog-post-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_post
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: blog_post_pk
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slug
+                  type: varchar(300)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: excerpt
+                  type: text
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: feature_image
+                  type: varchar(500)
+              - column:
+                  name: feature_image_alt
+                  type: varchar(255)
+              - column:
+                  name: meta_title
+                  type: varchar(255)
+              - column:
+                  name: meta_description
+                  type: text
+              - column:
+                  name: author_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: primary_category_id
+                  type: int8
+              - column:
+                  name: speciality_id
+                  type: int8
+              - column:
+                  name: published_at
+                  type: timestamp
+              - column:
+                  name: scheduled_at
+                  type: timestamp
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: 'DRAFT'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: visibility
+                  type: varchar(20)
+                  defaultValue: 'PUBLIC'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_featured
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: is_trending
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: reading_time
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: view_count
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: like_count
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: share_count
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: comment_count
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: allow_comments
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the association is currently active"
+
+              - column:
+                  name: created_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        - addForeignKeyConstraint:
+            baseColumnNames: author_id
+            baseTableName: blog_post
+            constraintName: blog_post_fk_author
+            referencedColumnNames: id
+            referencedTableName: profile
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: primary_category_id
+            baseTableName: blog_post
+            constraintName: blog_post_fk_primary_category
+            referencedColumnNames: id
+            referencedTableName: blog_category
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: speciality_id
+            baseTableName: blog_post
+            constraintName: blog_post_fk_speciality
+            referencedColumnNames: id
+            referencedTableName: medical_speciality
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: create-blog-post-category-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_post_category
+            columns:
+              - column:
+                  name: post_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: int8
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: blog_post_category
+            columnNames: post_id, category_id
+            constraintName: blog_post_category_pk
+
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: blog_post_category
+            constraintName: blog_post_category_fk_post
+            referencedColumnNames: id
+            referencedTableName: blog_post
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: category_id
+            baseTableName: blog_post_category
+            constraintName: blog_post_category_fk_category
+            referencedColumnNames: id
+            referencedTableName: blog_category
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: create-blog-tag-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_tag
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: blog_tag_pk
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: slug
+                  type: varchar(120)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: color_code
+                  type: varchar(7)
+              - column:
+                  name: usage_count
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the association is currently active"
+
+              - column:
+                  name: created_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+  - changeSet:
+      id: create-blog-post-tag-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_post_tag
+            columns:
+              - column:
+                  name: post_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tag_id
+                  type: int8
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: blog_post_tag
+            columnNames: post_id, tag_id
+            constraintName: blog_post_tag_pk
+
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: blog_post_tag
+            constraintName: blog_post_tag_fk_post
+            referencedColumnNames: id
+            referencedTableName: blog_post
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: tag_id
+            baseTableName: blog_post_tag
+            constraintName: blog_post_tag_fk_tag
+            referencedColumnNames: id
+            referencedTableName: blog_tag
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: create-blog-comment-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_comment
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: blog_comment_pk
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent_id
+                  type: int8
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_email
+                  type: varchar(255)
+              - column:
+                  name: author_website
+                  type: varchar(255)
+              - column:
+                  name: user_id
+                  type: int8
+              - column:
+                  name: ip_address
+                  type: varchar(45)
+              - column:
+                  name: user_agent
+                  type: text
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: 'PENDING'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: like_count
+                  type: integer
+                  defaultValue: 0
+              - column:
+                  name: is_verified
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: moderated_by
+                  type: int8
+              - column:
+                  name: moderated_at
+                  type: timestamp
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: blog_comment
+            constraintName: blog_comment_fk_post
+            referencedColumnNames: id
+            referencedTableName: blog_post
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: parent_id
+            baseTableName: blog_comment
+            constraintName: blog_comment_fk_parent
+            referencedColumnNames: id
+            referencedTableName: blog_comment
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: blog_comment
+            constraintName: blog_comment_fk_user
+            referencedColumnNames: id
+            referencedTableName: profile
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: moderated_by
+            baseTableName: blog_comment
+            constraintName: blog_comment_fk_moderator
+            referencedColumnNames: id
+            referencedTableName: profile
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: create-blog-post-view-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_post_view
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: blog_post_view_pk
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: profile_id
+                  type: int8
+              - column:
+                  name: ip_address
+                  type: varchar(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_agent
+                  type: text
+              - column:
+                  name: referrer
+                  type: varchar(500)
+              - column:
+                  name: viewed_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: blog_post_view
+            constraintName: blog_post_view_fk_post
+            referencedColumnNames: id
+            referencedTableName: blog_post
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: profile_id
+            baseTableName: blog_post_view
+            constraintName: blog_post_view_fk_user
+            referencedColumnNames: id
+            referencedTableName: profile
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: create-blog-post-like-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: blog_post_like
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: blog_post_like_pk
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: profile_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: blog_post_like
+            columnNames: post_id, user_id
+            constraintName: uk_blog_post_like_post_user
+
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: blog_post_like
+            constraintName: blog_post_like_fk_post
+            referencedColumnNames: id
+            referencedTableName: blog_post
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: profile_id
+            baseTableName: blog_post_like
+            constraintName: blog_post_like_fk_user
+            referencedColumnNames: id
+            referencedTableName: profile
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: create-blog-indexes
+      author: sadman
+      changes:
+        - createIndex:
+            indexName: idx_blog_post_slug
+            tableName: blog_post
+            columns:
+              - column:
+                  name: slug
+
+        - createIndex:
+            indexName: idx_blog_post_status_published
+            tableName: blog_post
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: published_at
+
+        - createIndex:
+            indexName: idx_blog_post_featured_trending
+            tableName: blog_post
+            columns:
+              - column:
+                  name: is_featured
+              - column:
+                  name: is_trending
+
+        - createIndex:
+            indexName: idx_blog_post_author_created
+            tableName: blog_post
+            columns:
+              - column:
+                  name: author_id
+              - column:
+                  name: created_at
+
+        - createIndex:
+            indexName: idx_blog_category_slug
+            tableName: blog_category
+            columns:
+              - column:
+                  name: slug
+
+        - createIndex:
+            indexName: idx_blog_category_active_order
+            tableName: blog_category
+            columns:
+              - column:
+                  name: is_active
+              - column:
+                  name: sort_order
+
+        - createIndex:
+            indexName: idx_blog_tag_slug
+            tableName: blog_tag
+            columns:
+              - column:
+                  name: slug
+
+        - createIndex:
+            indexName: idx_blog_comment_post_status
+            tableName: blog_comment
+            columns:
+              - column:
+                  name: post_id
+              - column:
+                  name: status
+
+        - createIndex:
+            indexName: idx_blog_post_view_post_date
+            tableName: blog_post_view
+            columns:
+              - column:
+                  name: post_id
+              - column:
+                  name: viewed_at
+
+        - createIndex:
+            indexName: idx_blog_post_view_ip_post
+            tableName: blog_post_view
+            columns:
+              - column:
+                  name: ip_address
+              - column:
+                  name: post_id

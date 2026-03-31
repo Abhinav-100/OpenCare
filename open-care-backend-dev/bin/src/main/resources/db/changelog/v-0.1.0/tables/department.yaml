@@ -1,0 +1,84 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-department-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: department
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: bn_name
+                  type: VARCHAR(100)
+
+              - column:
+                  name: department_category
+                  type: VARCHAR(50)
+                  remarks: "CLINICAL, ACADEMIC, SUPPORT, MIXED"
+
+              - column:
+                  name: description
+                  type: TEXT
+
+              - column:
+                  name: parent_department_id
+                  type: INT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "Record created by user"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Creation timestamp"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "Last updated by user"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Last update timestamp"
+
+        - addForeignKeyConstraint:
+            baseTableName: department
+            baseColumnNames: parent_department_id
+            referencedTableName: department
+            referencedColumnNames: id
+            constraintName: fk_department_parent

@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-document-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: document
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: document_id_pk
+                  remarks: "Primary key identifier"
+              - column:
+                  name: domain
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  remarks: "Type of entity (hospital, institution, doctor)"
+              - column:
+                  name: domain_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  remarks: "Foreign key to hospital, institution, or doctor id"
+              - column:
+                  name: document_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  remarks: "Type of document (id_card, certificate, image, report, etc.)"
+              - column:
+                  name: minio_object_key
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+                  remarks: "Full key path used in MinIO to store the file"
+              - column:
+                  name: content_type
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                  remarks: "MIME type of the file"
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"

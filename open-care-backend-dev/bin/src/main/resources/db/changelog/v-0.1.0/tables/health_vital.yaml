@@ -1,0 +1,516 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-health-vital-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: health_vital
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: profile_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_health_vital_profile
+                    references: profile(id)
+              - column:
+                  name: recorded_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              # Cardiovascular metrics
+              - column:
+                  name: blood_pressure_systolic
+                  type: INTEGER
+              - column:
+                  name: blood_pressure_diastolic
+                  type: INTEGER
+              - column:
+                  name: mean_arterial_pressure
+                  type: DECIMAL(5,1)
+                  remarks: "Calculated or measured MAP"
+              - column:
+                  name: pulse_pressure
+                  type: DECIMAL(5,1)
+                  remarks: "Systolic - Diastolic"
+              - column:
+                  name: heart_rate
+                  type: INTEGER
+              - column:
+                  name: heart_rate_variability
+                  type: DECIMAL(6,2)
+                  remarks: "HRV in milliseconds"
+              - column:
+                  name: cardiac_output
+                  type: DECIMAL(4,1)
+                  remarks: "L/min if measured"
+
+              # Respiratory metrics
+              - column:
+                  name: respiratory_rate
+                  type: INTEGER
+                  remarks: "Breaths per minute"
+              - column:
+                  name: oxygen_saturation
+                  type: DECIMAL(5,2)
+                  remarks: "SpO2 percentage"
+              - column:
+                  name: peak_flow_rate
+                  type: INTEGER
+                  remarks: "L/min - lung function"
+              - column:
+                  name: forced_vital_capacity
+                  type: DECIMAL(4,2)
+                  remarks: "FVC in liters"
+              - column:
+                  name: forced_expiratory_volume
+                  type: DECIMAL(4,2)
+                  remarks: "FEV1 in liters"
+
+              # Temperature and metabolism
+              - column:
+                  name: temperature_celsius
+                  type: DECIMAL(4,1)
+              - column:
+                  name: temperature_site
+                  type: VARCHAR(20)
+                  remarks: "oral, rectal, axillary, tympanic, temporal"
+              - column:
+                  name: basal_metabolic_rate
+                  type: INTEGER
+                  remarks: "Calories per day"
+              - column:
+                  name: resting_energy_expenditure
+                  type: INTEGER
+                  remarks: "REE in kcal/day"
+
+              # Blood glucose and metabolic
+              - column:
+                  name: blood_glucose_mg_dl
+                  type: DECIMAL(5,1)
+              - column:
+                  name: blood_glucose_mmol_l
+                  type: DECIMAL(4,1)
+              - column:
+                  name: glucose_measurement_type
+                  type: VARCHAR(20)
+                  remarks: "fasting, random, post_meal, hba1c"
+              - column:
+                  name: hours_since_last_meal
+                  type: DECIMAL(4,1)
+              - column:
+                  name: ketones
+                  type: DECIMAL(3,1)
+                  remarks: "mmol/L"
+
+              # Body composition and anthropometry
+              - column:
+                  name: height_cm
+                  type: DECIMAL(5,1)
+              - column:
+                  name: weight_kg
+                  type: DECIMAL(5,1)
+              - column:
+                  name: bmi
+                  type: DECIMAL(4,1)
+              - column:
+                  name: body_fat_percentage
+                  type: DECIMAL(4,1)
+              - column:
+                  name: muscle_mass_kg
+                  type: DECIMAL(5,1)
+              - column:
+                  name: bone_density
+                  type: DECIMAL(4,2)
+                  remarks: "g/cm² T-score"
+              - column:
+                  name: waist_circumference_cm
+                  type: DECIMAL(5,1)
+              - column:
+                  name: hip_circumference_cm
+                  type: DECIMAL(5,1)
+              - column:
+                  name: waist_hip_ratio
+                  type: DECIMAL(4,2)
+              - column:
+                  name: neck_circumference_cm
+                  type: DECIMAL(4,1)
+              - column:
+                  name: visceral_fat_level
+                  type: INTEGER
+                  remarks: "1-30 scale"
+
+              # Hydration and fluid balance
+              - column:
+                  name: hydration_level_percentage
+                  type: DECIMAL(4,1)
+              - column:
+                  name: fluid_intake_ml_24h
+                  type: INTEGER
+              - column:
+                  name: urine_output_ml_24h
+                  type: INTEGER
+              - column:
+                  name: urine_specific_gravity
+                  type: DECIMAL(4,3)
+
+              # Pain and comfort assessment
+              - column:
+                  name: pain_scale_0_10
+                  type: INTEGER
+                  constraints:
+                    checkConstraint: "pain_scale_0_10 >= 0 AND pain_scale_0_10 <= 10"
+              - column:
+                  name: pain_location
+                  type: VARCHAR(100)
+              - column:
+                  name: pain_type
+                  type: VARCHAR(50)
+                  remarks: "sharp, dull, burning, cramping, etc"
+
+              # Sleep and activity
+              - column:
+                  name: sleep_hours_last_night
+                  type: DECIMAL(3,1)
+              - column:
+                  name: sleep_quality_1_5
+                  type: INTEGER
+                  constraints:
+                    checkConstraint: "sleep_quality_1_5 >= 1 AND sleep_quality_1_5 <= 5"
+              - column:
+                  name: steps_24h
+                  type: INTEGER
+              - column:
+                  name: active_minutes_24h
+                  type: INTEGER
+              - column:
+                  name: calories_burned_24h
+                  type: INTEGER
+
+              # Mental health and stress
+              - column:
+                  name: stress_level_1_10
+                  type: INTEGER
+                  constraints:
+                    checkConstraint: "stress_level_1_10 >= 1 AND stress_level_1_10 <= 10"
+              - column:
+                  name: mood_score_1_10
+                  type: INTEGER
+                  constraints:
+                    checkConstraint: "mood_score_1_10 >= 1 AND mood_score_1_10 <= 10"
+              - column:
+                  name: anxiety_level_1_10
+                  type: INTEGER
+                  constraints:
+                    checkConstraint: "anxiety_level_1_10 >= 1 AND anxiety_level_1_10 <= 10"
+
+              # Additional biomarkers (if available)
+              - column:
+                  name: cortisol_level
+                  type: DECIMAL(6,2)
+                  remarks: "μg/dL or nmol/L"
+              - column:
+                  name: vitamin_d_level
+                  type: DECIMAL(4,1)
+                  remarks: "ng/mL or nmol/L"
+              - column:
+                  name: hemoglobin_level
+                  type: DECIMAL(4,1)
+                  remarks: "g/dL"
+              - column:
+                  name: white_blood_cell_count
+                  type: DECIMAL(6,2)
+                  remarks: "cells/μL"
+              - column:
+                  name: cholesterol_total
+                  type: INTEGER
+                  remarks: "mg/dL"
+              - column:
+                  name: cholesterol_ldl
+                  type: INTEGER
+                  remarks: "mg/dL"
+              - column:
+                  name: cholesterol_hdl
+                  type: INTEGER
+                  remarks: "mg/dL"
+              - column:
+                  name: triglycerides
+                  type: INTEGER
+                  remarks: "mg/dL"
+
+              # Measurement context and quality
+              - column:
+                  name: measurement_method
+                  type: VARCHAR(50)
+                  remarks: "manual, automatic, wearable, lab_test"
+              - column:
+                  name: measurement_device
+                  type: VARCHAR(100)
+                  remarks: "Device or equipment used"
+              - column:
+                  name: measurement_location
+                  type: VARCHAR(50)
+              - column:
+                  name: measurement_position
+                  type: VARCHAR(20)
+                  remarks: "sitting, standing, lying, walking"
+              - column:
+                  name: measurement_accuracy
+                  type: VARCHAR(20)
+                  remarks: "high, medium, low, estimated"
+              - column:
+                  name: environmental_temperature
+                  type: DECIMAL(4,1)
+              - column:
+                  name: environmental_humidity
+                  type: INTEGER
+                  remarks: "Percentage"
+
+              # Health status indicators
+              - column:
+                  name: overall_health_score
+                  type: DECIMAL(4,1)
+                  remarks: "Calculated composite score 0-100"
+              - column:
+                  name: cardiovascular_risk_score
+                  type: DECIMAL(4,1)
+                  remarks: "Calculated risk score"
+              - column:
+                  name: metabolic_health_score
+                  type: DECIMAL(4,1)
+                  remarks: "Calculated metabolic score"
+              - column:
+                  name: fitness_level
+                  type: VARCHAR(20)
+                  remarks: "poor, fair, good, excellent"
+              - column:
+                  name: health_alerts
+                  type: TEXT
+                  remarks: "JSON array of health alerts/warnings"
+
+              # Medication and lifestyle context
+              - column:
+                  name: medications_taken
+                  type: TEXT
+                  remarks: "JSON array of medications affecting vitals"
+              - column:
+                  name: recent_exercise
+                  type: BOOLEAN
+                  remarks: "Exercise within 2 hours"
+              - column:
+                  name: recent_caffeine
+                  type: BOOLEAN
+                  remarks: "Caffeine within 4 hours"
+              - column:
+                  name: recent_alcohol
+                  type: BOOLEAN
+                  remarks: "Alcohol within 12 hours"
+              - column:
+                  name: recent_smoking
+                  type: BOOLEAN
+                  remarks: "Smoking within 2 hours"
+              - column:
+                  name: menstrual_cycle_day
+                  type: INTEGER
+                  remarks: "Day of cycle for females"
+
+              # General notes and observations
+              - column:
+                  name: symptoms
+                  type: VARCHAR(500)
+                  remarks: "Current symptoms or complaints"
+              - column:
+                  name: notes
+                  type: VARCHAR(500)
+              - column:
+                  name: follow_up_required
+                  type: BOOLEAN
+                  defaultValue: false
+              - column:
+                  name: follow_up_priority
+                  type: VARCHAR(20)
+                  remarks: "low, medium, high, urgent"
+
+              # Audit fields
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_by
+                  type: VARCHAR(100)
+                  defaultValue: 'admin'
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_by
+                  type: VARCHAR(100)
+                  defaultValue: 'admin'
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+
+        # Indexes for performance
+        - createIndex:
+            indexName: idx_health_vital_profile
+            tableName: health_vital
+            columns:
+              - column:
+                  name: profile_id
+
+        - createIndex:
+            indexName: idx_health_vital_recorded_at
+            tableName: health_vital
+            columns:
+              - column:
+                  name: recorded_at
+
+        - createIndex:
+            indexName: idx_health_vital_profile_date
+            tableName: health_vital
+            columns:
+              - column:
+                  name: profile_id
+              - column:
+                  name: recorded_at
+
+        - createIndex:
+            indexName: idx_health_vital_glucose_type
+            tableName: health_vital
+            columns:
+              - column:
+                  name: glucose_measurement_type
+
+        - createIndex:
+            indexName: idx_health_vital_follow_up
+            tableName: health_vital
+            columns:
+              - column:
+                  name: follow_up_required
+              - column:
+                  name: follow_up_priority
+
+  # Create a view for latest vitals per person
+  - changeSet:
+      id: create-latest-vitals-view
+      author: sadman
+      changes:
+        - createView:
+            viewName: v_latest_health_vitals
+            selectQuery: |
+              SELECT DISTINCT ON (profile_id)
+                hv.*,
+                
+                -- Time-Based Metrics and Context
+                EXTRACT(DAY FROM (CURRENT_TIMESTAMP - hv.recorded_at)) AS days_since_last_recording,
+                (hv.blood_glucose_mg_dl IS NOT NULL AND hv.cholesterol_total IS NOT NULL) AS is_full_metabolic_panel,
+                (hv.recent_exercise OR hv.recent_caffeine OR hv.recent_alcohol OR hv.recent_smoking) AS is_recent_context_known,
+            
+                -- Blood Pressure Status (Highest severity takes precedence based on ACC/AHA)
+                CASE
+                WHEN hv.blood_pressure_systolic > 180 OR hv.blood_pressure_diastolic > 120 THEN 'HYPERTENSIVE_CRISIS'
+                WHEN hv.blood_pressure_systolic >= 140 OR hv.blood_pressure_diastolic >= 90 THEN 'STAGE_2_HYPERTENSION'
+                -- Stage 1: SBP 130-139 OR DBP 80-89. Already filtered for higher stages.
+                WHEN hv.blood_pressure_systolic >= 130 OR hv.blood_pressure_diastolic >= 80 THEN 'STAGE_1_HYPERTENSION'
+                -- Elevated: SBP 120-129 AND DBP < 80. Already filtered for Stage 1.
+                WHEN hv.blood_pressure_systolic >= 120 AND hv.blood_pressure_diastolic < 80 THEN 'ELEVATED_BP'
+                WHEN hv.blood_pressure_systolic < 90 OR hv.blood_pressure_diastolic < 60 THEN 'HYPOTENSION_RISK'
+                ELSE 'NORMAL_BP'
+                END AS blood_pressure_status,
+                
+                -- Specific BP/Cardio Condition Flags
+                (hv.blood_pressure_systolic >= 130 AND hv.blood_pressure_diastolic < 80) AS is_isolated_systolic_hypertension,
+                (hv.pulse_pressure > 60) AS is_wide_pulse_pressure,
+                (hv.heart_rate > 100) AS is_tachycardia,
+                (hv.heart_rate < 60) AS is_bradycardia,
+            
+                -- Respiratory Flags
+                (hv.oxygen_saturation < 95) AS is_low_oxygen,
+                (hv.forced_expiratory_volume IS NOT NULL AND hv.forced_vital_capacity IS NOT NULL AND (hv.forced_expiratory_volume / hv.forced_vital_capacity) < 0.70) AS is_obstructive_lung_disease,
+                
+                -- Temperature Flags
+                (hv.temperature_celsius > 38.0) AS is_fever,
+                (hv.temperature_celsius < 36.0) AS is_hypothermia,
+            
+                -- Metabolic/Glucose Flags
+                (hv.blood_glucose_mg_dl > 180) AS is_hyperglycemia,
+                (hv.blood_glucose_mg_dl < 70) AS is_hypoglycemia,
+            
+                -- Anthropometric Flags
+                (hv.bmi > 30) AS is_obesity,
+                (hv.bmi < 18.5) AS is_underweight,
+                
+                -- Calculated Ratios
+                CASE
+                WHEN hv.cholesterol_total IS NOT NULL AND hv.cholesterol_hdl IS NOT NULL AND hv.cholesterol_hdl > 0 THEN
+                ROUND(hv.cholesterol_total / hv.cholesterol_hdl, 2)
+                ELSE NULL
+                END AS tc_hdl_ratio
+            
+              FROM health_vital hv
+              ORDER BY profile_id, recorded_at DESC
+
+  # Create triggers for calculated fields
+  - changeSet:
+      id: create-health-vital-triggers
+      author: sadman
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: false
+            sql: |
+              CREATE OR REPLACE FUNCTION calculate_health_metrics()
+              RETURNS TRIGGER AS $$
+              BEGIN
+                -- Calculate BMI if height and weight are present
+                IF NEW.height_cm IS NOT NULL AND NEW.weight_kg IS NOT NULL AND NEW.height_cm > 0 THEN
+                  NEW.bmi := NEW.weight_kg / POWER(NEW.height_cm / 100.0, 2);
+                END IF;
+
+                -- Calculate pulse pressure
+                IF NEW.blood_pressure_systolic IS NOT NULL AND NEW.blood_pressure_diastolic IS NOT NULL THEN
+                  NEW.pulse_pressure := NEW.blood_pressure_systolic - NEW.blood_pressure_diastolic;
+                END IF;
+
+                -- Calculate mean arterial pressure
+                IF NEW.blood_pressure_systolic IS NOT NULL AND NEW.blood_pressure_diastolic IS NOT NULL THEN
+                  NEW.mean_arterial_pressure := NEW.blood_pressure_diastolic + (NEW.pulse_pressure / 3.0);
+                END IF;
+
+                -- Calculate waist-hip ratio
+                IF NEW.waist_circumference_cm IS NOT NULL AND NEW.hip_circumference_cm IS NOT NULL AND NEW.hip_circumference_cm > 0 THEN
+                  NEW.waist_hip_ratio := NEW.waist_circumference_cm / NEW.hip_circumference_cm;
+                END IF;
+
+                -- Convert glucose units if only one is provided
+                IF NEW.blood_glucose_mg_dl IS NOT NULL AND NEW.blood_glucose_mmol_l IS NULL THEN
+                  NEW.blood_glucose_mmol_l := NEW.blood_glucose_mg_dl / 18.0;
+                ELSIF NEW.blood_glucose_mmol_l IS NOT NULL AND NEW.blood_glucose_mg_dl IS NULL THEN
+                  NEW.blood_glucose_mg_dl := NEW.blood_glucose_mmol_l * 18.0;
+                END IF;
+
+                -- Set updated timestamp
+                NEW.updated_at := CURRENT_TIMESTAMP;
+
+                RETURN NEW;
+              END;
+              $$ LANGUAGE plpgsql;
+
+              CREATE TRIGGER tr_health_vital_calculate
+              BEFORE INSERT OR UPDATE ON health_vital
+              FOR EACH ROW
+              EXECUTE FUNCTION calculate_health_metrics();

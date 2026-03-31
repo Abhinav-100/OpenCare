@@ -1,0 +1,130 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-diagnostic-equipment-table
+      author: imran
+      changes:
+        - createTable:
+            tableName: diagnostic_equipment
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: "Primary key identifier"
+
+              - column:
+                  name: equipment_type_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  remarks: "Foreign key to equipment_type table"
+
+              - column:
+                  name: manufacturer_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  remarks: "Foreign key to equipment_manufacturer table"
+
+              - column:
+                  name: equipment_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks: "Name of the equipment"
+
+              - column:
+                  name: model
+                  type: varchar(255)
+                  remarks: "Model of the equipment"
+
+              - column:
+                  name: serial_number
+                  type: varchar(255)
+                  remarks: "Serial number of the equipment"
+
+              - column:
+                  name: software_version
+                  type: varchar(50)
+                  remarks: "Software version of the equipment"
+
+              - column:
+                  name: installation_date
+                  type: date
+                  remarks: "Date of installation"
+
+              - column:
+                  name: commissioning_date
+                  type: date
+                  remarks: "Date of commissioning"
+
+              - column:
+                  name: warranty_start_date
+                  type: date
+                  remarks: "Warranty start date"
+
+              - column:
+                  name: warranty_end_date
+                  type: date
+                  remarks: "Warranty end date"
+
+              - column:
+                  name: last_calibration_date
+                  type: date
+                  remarks: "Last calibration date"
+
+              - column:
+                  name: next_calibration_date
+                  type: date
+                  remarks: "Next calibration date"
+
+              - column:
+                  name: calibration_interval_days
+                  type: integer
+                  remarks: "Calibration interval in days"
+
+              - column:
+                  name: purchase_cost
+                  type: decimal(15,2)
+                  remarks: "Purchase cost of the equipment"
+
+              - column:
+                  name: currency
+                  type: varchar(10)
+                  remarks: "Currency of the purchase cost"
+
+              - column:
+                  name: status
+                  type: varchar(50)
+                  remarks: "Status of the equipment (e.g., ACTIVE, MAINTENANCE)"
+
+              - column:
+                  name: utilization_target_hours_day
+                  type: decimal(5,2)
+                  remarks: "Utilization target in hours per day"
+
+              - column:
+                  name: power_requirements_kw
+                  type: decimal(5,2)
+                  remarks: "Power requirements in kilowatts"
+
+              - column:
+                  name: weight_kg
+                  type: decimal(10,2)
+                  remarks: "Weight of the equipment in kilograms"
+
+        - addForeignKeyConstraint:
+              baseTableName: diagnostic_equipment
+              baseColumnNames: equipment_type_id
+              referencedTableName: equipment_type
+              referencedColumnNames: id
+              constraintName: fk_diagnostic_equipment_equipment_type
+
+        - addForeignKeyConstraint:
+              baseTableName: diagnostic_equipment
+              baseColumnNames: manufacturer_id
+              referencedTableName: equipment_manufacturer
+              referencedColumnNames: id
+              constraintName: fk_diagnostic_equipment_manufacturer

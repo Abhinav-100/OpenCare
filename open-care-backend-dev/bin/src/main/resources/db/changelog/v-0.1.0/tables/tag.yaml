@@ -1,0 +1,192 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tag-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: tag
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: display_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: category
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create-doctor-tag-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: doctor_tag
+            columns:
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_doctor_tag_doctor
+                    references: doctor(id)
+                    onDelete: CASCADE
+              - column:
+                  name: tag_id
+                  type: INT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_doctor_tag_tag
+                    references: tag(id)
+                    onDelete: CASCADE
+        - addPrimaryKey:
+            columnNames: doctor_id, tag_id
+            tableName: doctor_tag
+            constraintName: pk_doctor_tag
+
+  - changeSet:
+      id: create-hospital-tag-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: hospital_tag
+            columns:
+              - column:
+                  name: hospital_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_hospital_tag_hospital
+                    references: hospital(id)
+                    onDelete: CASCADE
+              - column:
+                  name: tag_id
+                  type: INT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_hospital_tag_tag
+                    references: tag(id)
+                    onDelete: CASCADE
+        - addPrimaryKey:
+            columnNames: hospital_id, tag_id
+            tableName: hospital_tag
+            constraintName: pk_hospital_tag
+
+#  for institution tags
+  - changeSet:
+      id: create-institution-tag-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: institution_tag
+            columns:
+              - column:
+                  name: institution_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_institution_tag_institution
+                    references: institution(id)
+                    onDelete: CASCADE
+              - column:
+                  name: tag_id
+                  type: INT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_institution_tag_tag
+                    references: tag(id)
+                    onDelete: CASCADE
+        - addPrimaryKey:
+            columnNames: institution_id, tag_id
+            tableName: institution_tag
+            constraintName: pk_institution_tag
+
+  - changeSet:
+      id: create-social-organization-tag-table
+      author: sadman
+      changes:
+        - createTable:
+            tableName: social_organization_tag
+            columns:
+              - column:
+                  name: social_organization_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_org_tag_social_organization
+                    references: social_organization(id)
+                    onDelete: CASCADE
+              - column:
+                  name: tag_id
+                  type: INT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_org_tag_tag
+                    references: tag(id)
+                    onDelete: CASCADE
+        - addPrimaryKey:
+            columnNames: social_organization_id, tag_id
+            tableName: social_organization_tag
+            constraintName: pk_org_tag
+
+  - changeSet:
+      id: add-tag-search-indexes
+      author: sadman
+      changes:
+        - createIndex:
+            tableName: tag
+            indexName: idx_tag_name_trgm
+            columns:
+              - column:
+                  name: name
+            using: gin
+            whereClause: "name IS NOT NULL"
+
+        - createIndex:
+            tableName: tag
+            indexName: idx_tag_display_name_trgm
+            columns:
+              - column:
+                  name: display_name
+            using: gin
+            whereClause: "display_name IS NOT NULL"
+
+        - createIndex:
+            tableName: doctor_tag
+            indexName: idx_doctor_tag_composite
+            columns:
+              - column:
+                  name: doctor_id
+              - column:
+                  name: tag_id
+
+        - createIndex:
+            tableName: hospital_tag
+            indexName: idx_hospital_tag_composite
+            columns:
+              - column:
+                  name: hospital_id
+              - column:
+                  name: tag_id
+
+        - createIndex:
+            tableName: social_organization_tag
+            indexName: idx_organization_tag_composite
+            columns:
+              - column:
+                  name: social_organization_id
+              - column:
+                  name: tag_id

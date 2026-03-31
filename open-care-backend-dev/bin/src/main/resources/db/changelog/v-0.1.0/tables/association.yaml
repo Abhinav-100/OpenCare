@@ -1,0 +1,234 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-association-table
+      author: sadman
+      validCheckSum: "ANY"
+      changes:
+        - createTable:
+            tableName: association
+            remarks: "Table to store professional associations"
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  startWith: 20
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    remarks: "Primary key identifier"
+
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                  remarks: "Association name in English"
+
+              - column:
+                  name: bn_name
+                  type: varchar(100)
+                  remarks: "Association name in Bengali"
+
+              - column:
+                  name: short_name
+                  type: varchar(50)
+                  remarks: "Short name or acronym"
+
+              - column:
+                  name: type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                  remarks: "Type of association (e.g., GENERAL, SPECIAL)"
+
+              - column:
+                  name: medical_speciality_id
+                  type: int4
+                  remarks: "Reference to medical speciality if applicable"
+
+              - column:
+                  name: domain
+                  type: VARCHAR(50)
+                  remarks: "Domain of the association (e.g., DOCTOR, NURSE)"
+
+              - column:
+                  name: description
+                  type: text
+                  remarks: "Detailed description of the association"
+
+              - column:
+                  name: logo_url
+                  type: varchar(255)
+                  remarks: "URL to association logo"
+
+              - column:
+                  name: founded_date
+                  type: date
+                  remarks: "Date when association was founded"
+
+              - column:
+                  name: website_url
+                  type: varchar(255)
+                  remarks: "Official website URL"
+
+              - column:
+                  name: facebook_url
+                  type: varchar(255)
+                  remarks: "Facebook page URL"
+
+              - column:
+                  name: twitter_url
+                  type: varchar(255)
+                  remarks: "Twitter profile URL"
+
+              - column:
+                  name: linkedin_url
+                  type: varchar(255)
+                  remarks: "LinkedIn profile URL"
+
+              - column:
+                  name: youtube_url
+                  type: varchar(255)
+                  remarks: "YouTube channel URL"
+
+              - column:
+                  name: email
+                  type: varchar(255)
+                  remarks: "Primary contact email"
+
+              - column:
+                  name: phone
+                  type: varchar(20)
+                  remarks: "Primary contact phone number"
+
+              - column:
+                  name: division_id
+                  type: int8
+                  remarks: "Reference to division location"
+
+              - column:
+                  name: district_id
+                  type: int8
+                  remarks: "Reference to district location"
+
+              - column:
+                  name: upazila_id
+                  type: int8
+                  remarks: "Reference to upazila location"
+
+              - column:
+                  name: origin_country
+                  type: varchar(20)
+                  defaultValue: 'INDIA'
+                  constraints:
+                    nullable: false
+                  remarks: "Country of origin (default: INDIA)"
+              - column:
+                  name: is_affiliated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the association is affiliated with OpenCare"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the association is currently active"
+
+              - column:
+                  name: created_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(36)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+                  remarks: "User/system who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        - createIndex:
+            tableName: association
+            indexName: idx_association_name
+            columns:
+              - column:
+                  name: name
+            unique: true
+
+        - createIndex:
+            tableName: association
+            indexName: idx_association_type
+            columns:
+              - column:
+                  name: type
+
+        - createIndex:
+            tableName: association
+            indexName: idx_association_location
+            columns:
+              - column:
+                  name: division_id
+              - column:
+                  name: district_id
+              - column:
+                  name: upazila_id
+
+        - addForeignKeyConstraint:
+            baseColumnNames: medical_speciality_id
+            baseTableName: association
+            constraintName: fk_association_medical_speciality
+            referencedColumnNames: id
+            referencedTableName: medical_speciality
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: division_id
+            baseTableName: association
+            constraintName: fk_association_division
+            referencedColumnNames: id
+            referencedTableName: division
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: district_id
+            baseTableName: association
+            constraintName: fk_association_district
+            referencedColumnNames: id
+            referencedTableName: district
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: upazila_id
+            baseTableName: association
+            constraintName: fk_association_upazila
+            referencedColumnNames: id
+            referencedTableName: upazila
+            onDelete: NO ACTION
+            onUpdate: NO ACTION

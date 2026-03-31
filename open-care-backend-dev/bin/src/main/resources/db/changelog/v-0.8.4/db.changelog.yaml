@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: data/normalize-country-to-india.yaml
+      relativeToChangelogFile: true

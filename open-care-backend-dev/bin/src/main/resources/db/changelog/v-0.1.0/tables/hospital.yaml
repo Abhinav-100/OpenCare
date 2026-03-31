@@ -1,0 +1,289 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-hospital-table
+      author: sadman
+      validCheckSum: "ANY"
+      changes:
+        - createTable:
+            tableName: hospital
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: hospital_id_pk
+                  remarks: "Primary key identifier for hospital"
+
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                  remarks: "Hospital name in English"
+
+              - column:
+                  name: bn_name
+                  type: varchar(100)
+                  remarks: "Hospital name in Bengali"
+
+              - column:
+                  name: registration_code
+                  type: varchar(50)
+                  remarks: "Government registration code"
+
+              - column:
+                  name: slug
+                  type: varchar(150)
+                  remarks: "URL-friendly unique identifier"
+
+              - column:
+                  name: image_url
+                  type: varchar(250)
+                  remarks: "URL to hospital image/logo"
+
+              - column:
+                  name: number_of_bed
+                  type: int4
+                  remarks: "Total number of beds available"
+
+              - column:
+                  name: district_id
+                  type: int4
+                  remarks: "Reference to district location"
+
+              - column:
+                  name: upazila_id
+                  type: int4
+                  remarks: "Reference to upazila location"
+
+              - column:
+                  name: union_id
+                  type: int4
+                  remarks: "Reference to union location"
+
+              - column:
+                  name: hospital_type
+                  type: varchar(50)
+                  remarks: "Type of hospital (e.g., GENERAL, SPECIALIZED, CLINIC)"
+
+              - column:
+                  name: organization_type
+                  type: varchar(50)
+                  remarks: "Organization type (e.g., GOVERNMENT, PRIVATE, NGO)"
+
+              - column:
+                  name: email
+                  type: varchar(100)
+                  remarks: "Primary contact email"
+
+              - column:
+                  name: phone
+                  type: varchar(100)
+                  remarks: "Primary contact phone number"
+
+              - column:
+                  name: address
+                  type: varchar(500)
+                  remarks: "Full address of the hospital"
+
+              - column:
+                  name: lat
+                  type: decimal(12,9)
+                  remarks: "Latitude coordinate for location"
+
+              - column:
+                  name: lon
+                  type: decimal(12,9)
+                  remarks: "Longitude coordinate for location"
+
+              - column:
+                  name: facebook_page_url
+                  type: varchar(500)
+                  remarks: "Facebook page URL"
+
+              - column:
+                  name: twitter_profile_url
+                  type: varchar(500)
+                  remarks: "Twitter profile URL"
+
+              - column:
+                  name: website_url
+                  type: varchar(500)
+                  remarks: "Official website URL"
+
+              - column:
+                  name: has_emergency_service
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether hospital has 24/7 emergency department"
+
+              - column:
+                  name: has_ambulance_service
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether hospital provides own ambulance service"
+
+              - column:
+                  name: has_blood_bank
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Whether hospital has in-house blood bank"
+
+              - column:
+                  name: is_affiliated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the hospital is affiliated with OpenCare"
+
+              - column:
+                  name: is_verified
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the hospital information is verified"
+
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+                  remarks: "Indicates if the doctor is active"
+
+              - column:
+                  name: created_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who created the record"
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was created"
+
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+                  defaultValue: 'admin'
+                  constraints:
+                    nullable: false
+                  remarks: "User who last updated the record"
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+                  constraints:
+                    nullable: false
+                  remarks: "Timestamp when record was last updated"
+
+        - addForeignKeyConstraint:
+            baseColumnNames: district_id
+            baseTableName: hospital
+            constraintName: hospital_fk_district
+            referencedColumnNames: id
+            referencedTableName: district
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: upazila_id
+            baseTableName: hospital
+            constraintName: hospital_fk_upazila
+            referencedColumnNames: id
+            referencedTableName: upazila
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: union_id
+            baseTableName: hospital
+            constraintName: hospital_fk_union
+            referencedColumnNames: id
+            referencedTableName: union
+            onUpdate: CASCADE
+            onDelete: NO ACTION
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_name
+            columns:
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_registration
+            columns:
+              - column:
+                  name: registration_code
+            unique: true
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_district
+            columns:
+              - column:
+                  name: district_id
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_upazila
+            columns:
+              - column:
+                  name: upazila_id
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_union
+            columns:
+              - column:
+                  name: union_id
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_type
+            columns:
+              - column:
+                  name: hospital_type
+              - column:
+                  name: organization_type
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_location
+            columns:
+              - column:
+                  name: lat
+              - column:
+                  name: lon
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_affiliation
+            columns:
+              - column:
+                  name: is_affiliated
+
+        - createIndex:
+            tableName: hospital
+            indexName: idx_hospital_bed_capacity
+            columns:
+              - column:
+                  name: number_of_bed

@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-division-table
+      author: sadman
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: division_id_pk
+                  name: id
+                  type: serial
+                  startWith: 10
+                  remarks: "Primary key. Unique division identifier"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: varchar(100)
+                  remarks: "Division name in English"
+              - column:
+                  constraints:
+                    nullable: false
+                  name: bn_name
+                  type: varchar(100)
+                  remarks: "Division name in Bangla"
+              - column:
+                  name: url
+                  type: varchar(100)
+                  remarks: "URL for division resource"
+              - column:
+                  name: geom
+                  type: geometry(MULTIPOLYGON,4326)
+                  remarks: "Geographical boundary (geometry)"
+            tableName: division
+        - createIndex:
+            tableName: division
+            indexName: idx_division_name
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            tableName: division
+            indexName: idx_division_geom
+            columns:
+              - column:
+                  name: geom
+                  type: geometry(MULTIPOLYGON,4326)

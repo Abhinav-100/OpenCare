@@ -1,0 +1,151 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-hospital-medical-test-table
+      author: alamin
+      changes:
+        - createTable:
+            tableName: hospital_medical_test
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: hospital_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_hospital_medical_test_hospital
+                    references: hospital(id)
+              - column:
+                  name: name
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: test_code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+                    unique: true
+              - column:
+                  name: medical_test_id
+                  type: INT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_hospital_medical_test_medical_test
+                    references: medical_test(id)
+              - column:
+                  name: category
+                  type: VARCHAR(100)
+              - column:
+                  name: description
+                  type: VARCHAR(500)
+              - column:
+                  name: price
+                  type: NUMERIC(10,2)
+              - column:
+                  name: duration
+                  type: INT
+              - column:
+                  name: preparation_instructions
+                  type: VARCHAR(500)
+              - column:
+                  name: is_available
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+              - column:
+                  name: equipment
+                  type: VARCHAR(200)
+              - column:
+                  name: is_specialist_required
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: processing_time_minutes
+                  type: INT
+                  defaultValueNumeric: 120
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sample_collected_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: delivery_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated_by
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseColumnNames: hospital_id
+            baseTableName: hospital_medical_test
+            constraintName: hospital_medical_test_fk_hospital
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: hospital
+            validate: true
+        - addForeignKeyConstraint:
+            baseColumnNames: medical_test_id
+            baseTableName: hospital_medical_test
+            constraintName: hospital_medical_test_fk_medical_test
+            deferrable: false
+            initiallyDeferred: false
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: medical_test
+            validate: true
+
+        - createIndex:
+            tableName: hospital_medical_test
+            indexName: idx_hospital_medical_test_hospital
+            columns:
+              - column:
+                  name: hospital_id
+
+        - createIndex:
+            tableName: hospital_medical_test
+            indexName: idx_hospital_medical_test_test
+            columns:
+              - column:
+                  name: medical_test_id
+        - createIndex:
+            tableName: hospital_medical_test
+            indexName: idx_hospital_medical_test_hospital_test
+            columns:
+              - column:
+                  name: hospital_id
+              - column:
+                  name: medical_test_id
