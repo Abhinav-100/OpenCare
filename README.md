@@ -1,181 +1,295 @@
 # OpenCare
 
-## One-Line Description
 OpenCare is a focused healthcare coordination platform for Odisha, India.
 
+## Quick Start
+
+Run these commands from project root.
+
+```powershell
+# 1) Start backend dependencies
+cd open-care-backend-dev
+docker compose up -d postgres-app postgres-keycloak keycloak minio
+
+# 2) Start backend
+.\mvnw.cmd "-Dmaven.test.skip=true" spring-boot:run
+
+# 3) Start frontend (new terminal)
+cd ..\open-care-frontend-dev
+yarn install
+yarn dev
+
+# 4) Run pre-demo check (new terminal)
+cd ..
+.\demo-precheck.ps1
+```
+
 ## Problem Statement
+
 Patients in Odisha often face fragmented healthcare access:
 - difficulty finding verified doctors
 - weak linkage between doctor and hospital context
 - inconsistent appointment booking paths
 
-For evaluation, this project focuses on solving one clear and reliable care journey instead of covering every healthcare sub-domain.
+For evaluation, this project focuses on one reliable care journey instead of covering every healthcare sub-domain.
 
 ## Solution Overview
-OpenCare provides a single end-to-end flow:
+
+OpenCare provides one end-to-end flow:
 1. doctor onboarding and approval
 2. patient authentication
 3. doctor and hospital discovery
 4. appointment booking with validation rules
 
-This keeps the system understandable for viva/demo while still demonstrating real backend constraints and role-aware behavior.
+This keeps the system easy to demo while still showing real backend rules and role-based behavior.
 
-## Core Features (Evaluation Scope)
-Only these four flows are in active evaluation scope:
+## Core Features (Current Scope)
+
 1. Doctor onboarding + admin approval
 2. Patient registration/login
 3. Doctor/Hospital discovery
 4. Appointment booking
 
-## Tech Stack (Minimal)
-- Frontend: Next.js 15, React 19, TypeScript
-- Backend: Spring Boot 3.4, Java 21
-- Database: PostgreSQL 16
-- Auth: Keycloak (OAuth2/JWT)
-- Infra: Docker Compose
+## Architecture
 
-## Architecture Overview
-Simple request path:
+Request path:
 
 ```text
 Frontend (Next.js)
-	-> calls Backend REST APIs (Spring Boot)
-	-> Backend validates JWT with Keycloak
-	-> Backend reads/writes PostgreSQL
+	-> Backend REST APIs (Spring Boot)
+	-> JWT validation via Keycloak
+	-> Data read/write in PostgreSQL
 ```
 
 Component roles:
-- Frontend: user interface for admin and patient actions.
-- Backend: business rules, role checks, booking constraints.
-- PostgreSQL: source of truth for doctors, hospitals, profiles, appointments.
-- Keycloak: authentication and token issuance.
+- Frontend: user interface for admin and patient actions
+- Backend: business rules, role checks, booking constraints
+- PostgreSQL: source of truth for doctors, hospitals, profiles, appointments
+- Keycloak: authentication and token issuance
 
-Why this matters for evaluation:
-- the frontend handles user interactions
-- the backend enforces business and access rules
-- PostgreSQL stores healthcare data consistently
-- Keycloak manages secure identity and token validation
+## Project Structure
 
-## How To Run (Step-by-Step)
-
-### Prerequisites
-- Java 21 installed
-- Docker Desktop running
-- Node.js 18+ and Yarn
-
-### 1) Start backend dependencies
-```powershell
-Set-Location "c:\Users\Abhinav\Desktop\Major Project\OpenCare\open-care-backend-dev"
-docker-compose up -d postgres-app postgres-keycloak keycloak minio
+```text
+.
+├── open-care-backend-dev/    # Spring Boot backend
+├── open-care-frontend-dev/   # Next.js frontend
+├── .github/workflows/        # CI workflow
+├── demo-precheck.ps1         # Root pre-demo verification script
+└── README.md
 ```
 
-### 2) Start backend
+Notes:
+- Backend scripts and deployment helpers are under `open-care-backend-dev/scripts`.
+- A backend wrapper exists: `open-care-backend-dev/demo-precheck.ps1`.
+
+## Team Workflow
+
+Use a simple, safe team process.
+
+### Branching rules
+- `main` should stay stable and demo-ready.
+- Create feature branches from `main`.
+- Suggested naming: `feature/<topic>`, `fix/<topic>`, `docs/<topic>`.
+
+### Pull request flow
+1. Pull latest `main`.
+2. Create your branch.
+3. Make small focused changes.
+4. Run local checks:
+	 - backend compile/tests as needed
+	 - frontend tests
+	 - pre-demo check script
+5. Open PR to `main`.
+6. Merge only after CI is green and reviewer approval.
+
+### Precheck usage before merge/demo
+- Run from root: `.\demo-precheck.ps1`
+- Or from backend folder: `.\demo-precheck.ps1` (wrapper)
+- If result is `❌ DEMO NOT READY`, fix listed issues first.
+
+## Setup (Step-by-Step)
+
+### Prerequisites
+- Java 21
+- Docker Desktop
+- Node.js 18+ and Yarn
+
+### Start backend dependencies
+
 ```powershell
-Set-Location "c:\Users\Abhinav\Desktop\Major Project\OpenCare\open-care-backend-dev"
-$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot"
+cd open-care-backend-dev
+docker compose up -d postgres-app postgres-keycloak keycloak minio
+```
+
+### Start backend
+
+```powershell
+cd open-care-backend-dev
 .\mvnw.cmd "-Dmaven.test.skip=true" spring-boot:run
 ```
 
-If port 6700 is busy, run on another port:
+If port 6700 is busy:
+
 ```powershell
 $env:SERVER_PORT="6701"
 .\mvnw.cmd "-Dmaven.test.skip=true" spring-boot:run
 ```
 
-### 3) Start frontend
+### Start frontend
+
 ```powershell
-Set-Location "c:\Users\Abhinav\Desktop\Major Project\OpenCare\open-care-frontend-dev"
+cd open-care-frontend-dev
 yarn install
 yarn dev
 ```
 
-### 4) Verify services
+### Verify services
 - Frontend: http://localhost:3000
 - Backend Swagger: http://localhost:6700/swagger-ui.html
 - Backend readiness: http://localhost:6700/actuator/health/readiness
 
-If you started backend on another port (for example `6701`), replace `6700` in the URLs above.
+If backend started on another port (for example 6701), use that port in URLs.
 
 ## Pre-Demo Verification
 
-Run this from project root:
+Run from project root:
 
 ```powershell
-Set-Location "c:\Users\Abhinav\Desktop\Major Project\OpenCare"
+cd .
 .\demo-precheck.ps1
 ```
 
 What it checks:
-- Backend readiness at `/actuator/health/readiness` (expects `status=UP`).
-- Frontend availability on `http://localhost:3000` or `http://localhost:3001`.
-- Port sanity for `6700` and `3000/3001` (detects stale or conflicting listener state).
-- Required Docker services running: `postgres-app`, `postgres-keycloak`, `keycloak`, `minio`.
+- Backend readiness at `/actuator/health/readiness` (expects `status=UP`)
+- Frontend availability on `http://localhost:3000` or `http://localhost:3001`
+- Port sanity for 6700 and 3000/3001
+- Required Docker services: `postgres-app`, `postgres-keycloak`, `keycloak`, `minio`
 - Demo data checks:
-	- at least one approved doctor exists (via `/api/doctors?page=0&size=1`)
-	- at least one patient exists (uses default demo account, auto-creates when supported)
+	- approved doctor exists
+	- patient exists (default demo account, auto-create where supported)
 
-Default demo account used by the script:
+Default demo account used by precheck:
 
 ```text
 Email: demo.patient@opencare.in
 Password: Demo@123A
 ```
 
-The script prints a final summary:
+Script output summary:
 - Backend: PASS/FAIL
 - Frontend: PASS/FAIL
 - Data: PASS/FAIL
 - Dependencies: PASS/FAIL
 
-And final verdict:
+Final verdict:
 - `✅ SYSTEM READY FOR DEMO`
 - `❌ DEMO NOT READY`
 
-If script fails:
-- Read the `[FAIL]` line and apply the exact `fix:` command shown beneath it.
-- Re-run `.\demo-precheck.ps1` until all checks show `[PASS]`.
+If it fails, apply the exact `fix:` line shown and rerun.
 
-### 5) Bootstrap demo data (optional)
-- Use existing seeded/local data from your running database.
-- If needed, create one admin user, one approved doctor, and one patient via auth and doctor APIs before the demo flow.
+## Demo Flow
 
-## Demo Flow (Exact Evaluation Sequence)
-1. Admin approves doctor.
-2. Patient logs in.
-3. Patient searches doctor.
-4. Patient books appointment.
-5. System validates constraints (doctor active/verified, doctor-hospital consistency, slot availability).
+Exact evaluation sequence:
+1. Admin approves doctor
+2. Patient logs in
+3. Patient searches doctor
+4. Patient books appointment
+5. System validates:
+	 - doctor active/verified
+	 - doctor-hospital consistency
+	 - slot availability
 
-Suggested walkthrough:
-- Admin approves doctor.
-- Patient signs in.
-- Patient searches a doctor.
-- Patient books an appointment and verifies booking in appointments list.
+Suggested live walkthrough:
+- Approve doctor
+- Sign in as patient
+- Search doctor
+- Book appointment
+- Show booked appointment in list
+
+## Common Issues & Fixes
+
+### 1) Port already in use
+Symptoms:
+- Backend fails to start on 6700
+- Frontend shifts from 3000 to 3001 or becomes stale
+
+Fix:
+```powershell
+# Inspect listeners
+Get-NetTCPConnection -LocalPort 6700,3000,3001 -State Listen
+
+# Stop conflicting process by PID
+Stop-Process -Id <PID> -Force
+```
+
+### 2) Backend not starting
+Symptoms:
+- `spring-boot:run` exits early
+
+Fix:
+```powershell
+cd open-care-backend-dev
+.\mvnw.cmd -DskipTests compile
+.\mvnw.cmd "-Dmaven.test.skip=true" spring-boot:run
+```
+
+### 3) Frontend not loading
+Symptoms:
+- browser cannot open localhost:3000 or localhost:3001
+
+Fix:
+```powershell
+cd open-care-frontend-dev
+yarn install
+yarn dev
+```
+
+### 4) Precheck failing
+Symptoms:
+- `❌ DEMO NOT READY`
+
+Fix:
+- Read the first `[FAIL]` and run the exact `fix:` line shown.
+- Rerun precheck until all categories are PASS.
 
 ## Demo Highlights (Auth + Booking)
-1. Authentication flow
-- Patient registration and login via `/api/auth/register` and `/api/auth/login`.
-- Doctor self-registration via `/api/auth/register/doctor` with pending approval state.
 
-2. Appointment booking flow
-- Patient books with `POST /api/appointments` from doctor/hospital discovery.
-- Booking guards are enforced: doctor must be active, verified, and hospital-compatible.
-- Slot availability check prevents overlapping bookings.
+Authentication:
+- Patient registration/login via `/api/auth/register` and `/api/auth/login`
+- Doctor self-registration via `/api/auth/register/doctor` (pending approval)
+
+Booking:
+- Patient books via `POST /api/appointments`
+- Guards enforced:
+	- doctor active
+	- doctor verified
+	- hospital-compatible booking
+	- no overlapping slot
+
+## Tech Stack
+
+- Frontend: Next.js 15, React 19, TypeScript
+- Backend: Spring Boot 3.4, Java 21
+- Database: PostgreSQL 16
+- Auth: Keycloak (OAuth2/JWT)
+- Infra: Docker Compose
 
 ## Honest Limitations
-- The project is not fully production hardened yet.
-- Coverage is strongest in core flow; non-core modules are not fully validated for final deployment.
-- Deployment setup is simplified for local evaluation and demonstration.
-- Operational hardening (full observability, robust CI gates, cloud rollout automation) is still limited.
+
+- Not fully production-hardened yet
+- Coverage is strongest in core flow; non-core modules are less validated
+- Local/demo setup is stronger than cloud operational hardening
 
 ## Future Improvements
-1. Expand security regression tests beyond core routes.
-2. Add end-to-end automated tests with real containerized dependencies.
-3. Strengthen deployment automation and environment configuration profiles.
-4. Improve monitoring dashboards and incident diagnostics.
-5. Re-introduce broader healthcare modules only after core reliability gates are met.
+
+1. Expand security regression tests beyond core routes
+2. Add end-to-end tests with containerized dependencies
+3. Strengthen deployment automation and environment profiles
+4. Improve monitoring and incident diagnostics
+5. Re-introduce broader modules only after core reliability gates are stable
 
 ## Documentation Map
-- Root overview: this file.
-- Backend setup and API notes: [open-care-backend-dev/README.md](open-care-backend-dev/README.md)
-- Frontend setup and routes: [open-care-frontend-dev/README.md](open-care-frontend-dev/README.md)
+
+- Root overview: this file
+- Backend details: [open-care-backend-dev/README.md](open-care-backend-dev/README.md)
+- Frontend details: [open-care-frontend-dev/README.md](open-care-frontend-dev/README.md)
