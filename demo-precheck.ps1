@@ -1,7 +1,10 @@
 param(
     [string]$BackendBaseUrl = "http://localhost:6700",
     [string]$DemoPatientEmail = "demo.patient@opencare.in",
-    [string]$DemoPatientPassword = "Demo@123A",
+    [PSCredential]$DemoPatientCredential = (New-Object System.Management.Automation.PSCredential(
+        "demo.patient@opencare.in",
+        (ConvertTo-SecureString "Demo@123A" -AsPlainText -Force)
+    )),
     [int]$DemoDistrictId = 119,
     [int]$TimeoutSec = 3
 )
@@ -162,6 +165,8 @@ $summary = [ordered]@{
     Dependencies = $false
 }
 
+$demoPatientPasswordPlain = $DemoPatientCredential.GetNetworkCredential().Password
+
 Write-Info "Running pre-demo smoke checks..."
 
 # 1) Backend health
@@ -171,7 +176,7 @@ if ($backendResult.ok -and $backendResult.data.status -eq "UP") {
     Write-Pass "Backend is running"
 }
 else {
-    Write-Fail "Backend not reachable or readiness != UP" "run backend: Set-Location 'open-care-backend-dev'; .\\mvnw.cmd \"-Dmaven.test.skip=true\" spring-boot:run"
+    Write-Fail "Backend not reachable or readiness != UP" "run backend: Set-Location 'open-care-backend-dev'; & '.\\mvnw.cmd' @('-Dmaven.test.skip=true','spring-boot:run')"
 }
 
 # 2) Frontend availability
@@ -316,7 +321,7 @@ else {
     $patientToken = $null
     $patientLoginBody = @{
         username = $DemoPatientEmail
-        password = $DemoPatientPassword
+        password = $demoPatientPasswordPlain
     }
 
     $patientLoginResult = Invoke-Api -Method "POST" -Uri "$BackendBaseUrl/api/auth/login" -Body $patientLoginBody -Timeout $TimeoutSec
@@ -328,7 +333,7 @@ else {
             firstName  = "Demo"
             lastName   = "Patient"
             phone      = "9876543210"
-            password   = $DemoPatientPassword
+            password   = $demoPatientPasswordPlain
             bloodGroup = "A_POSITIVE"
             gender     = "MALE"
             districtId = $DemoDistrictId
@@ -355,7 +360,7 @@ else {
 
     if (-not $patientToken) {
         $dataOk = $false
-        Write-Fail "Patient demo account is not usable" "Run this exactly: 1) POST /api/auth/register with email '$DemoPatientEmail' and password '$DemoPatientPassword' 2) rerun .\\demo-precheck.ps1"
+        Write-Fail "Patient demo account is not usable" "Run this exactly: 1) POST /api/auth/register with email '$DemoPatientEmail' and password '<demo password>' 2) rerun .\\demo-precheck.ps1"
     }
     else {
         $selfProfileResult = Invoke-Api -Method "GET" -Uri "$BackendBaseUrl/api/profiles/self" -Headers @{ Authorization = "Bearer $patientToken" } -Timeout $TimeoutSec

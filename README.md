@@ -25,7 +25,8 @@ The launcher handles startup end-to-end:
 .\start-demo.ps1 `
   -WarmupSeconds 12 `
   -BackendTimeoutSeconds 180 `
-  -FrontendTimeoutSeconds 180
+  -FrontendTimeoutSeconds 180 `
+  -FailOnPrecheck
 ```
 
 Skip precheck if you only want to boot services:
@@ -38,6 +39,12 @@ Use longer waits on slower machines:
 
 ```powershell
 .\start-demo.ps1 -BackendTimeoutSeconds 300 -FrontendTimeoutSeconds 300
+```
+
+Run in strict mode when you want the launcher to fail on precheck issues:
+
+```powershell
+.\start-demo.ps1 -FailOnPrecheck
 ```
 
 ## What start-demo.ps1 Starts
@@ -112,6 +119,8 @@ Final verdict:
 - `DEMO NOT READY`
 
 If any check fails, apply the exact `fix:` command shown by the script and run precheck again.
+
+By default, launcher startup completes even if precheck reports issues. Use `-FailOnPrecheck` to enforce strict failure behavior.
 
 ## Quick Troubleshooting
 

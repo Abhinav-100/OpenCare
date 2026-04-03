@@ -3,17 +3,16 @@ param(
 	[int]$WarmupSeconds = 12,
 	[int]$BackendTimeoutSeconds = 180,
 	[int]$FrontendTimeoutSeconds = 180,
-	[switch]$SkipPrecheck
+	[switch]$SkipPrecheck,
+	[switch]$FailOnPrecheck
 )
 
 $ErrorActionPreference = "Stop"
 
-function Ensure-Command {
+function Get-CommandPresence {
 	param([string]$Name)
 
-	if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
-		throw "Required command '$Name' was not found in PATH."
-	}
+	return [bool](Get-Command $Name -ErrorAction SilentlyContinue)
 }
 
 function Start-InNewPowerShellWindow {
@@ -40,10 +39,10 @@ function Stop-KnownProcessOnPort {
 		return
 	}
 
-	$pids = @($listeners | Select-Object -ExpandProperty OwningProcess -Unique)
-	foreach ($pid in $pids) {
+	$uniqueListeners = @($listeners | Group-Object -Property OwningProcess | ForEach-Object { $_.Group[0] })
+	foreach ($listener in $uniqueListeners) {
 		try {
-			$proc = Get-Process -Id $pid -ErrorAction Stop
+			$proc = Get-Process -Id $listener.OwningProcess -ErrorAction Stop
 		}
 		catch {
 			continue
@@ -51,11 +50,11 @@ function Stop-KnownProcessOnPort {
 
 		$procName = $proc.ProcessName.ToLowerInvariant()
 		if ($AllowedProcessNames -contains $procName) {
-			Write-Host "[INFO] Stopping existing process '$($proc.ProcessName)' on port $Port (PID $pid)..." -ForegroundColor Yellow
-			Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
+			Write-Host "[INFO] Stopping existing process '$($proc.ProcessName)' on port $Port (Owner $($listener.OwningProcess))..." -ForegroundColor Yellow
+			Stop-Process -Id $listener.OwningProcess -Force -ErrorAction SilentlyContinue
 		}
 		else {
-			Write-Host "[WARN] Port $Port is used by '$($proc.ProcessName)' (PID $pid). Stop it manually if startup fails." -ForegroundColor Yellow
+			Write-Host "[WARN] Port $Port is used by '$($proc.ProcessName)' (Owner $($listener.OwningProcess)). Stop it manually if startup fails." -ForegroundColor Yellow
 		}
 	}
 }
@@ -128,9 +127,9 @@ if (-not (Test-Path $frontendDir)) { throw "Frontend directory not found: $front
 if (-not (Test-Path $composeFile)) { throw "Compose file not found: $composeFile" }
 if (-not (Test-Path $precheckScript) -and -not $SkipPrecheck) { throw "Precheck script not found: $precheckScript" }
 
-Ensure-Command -Name "docker"
-Ensure-Command -Name "powershell"
-Ensure-Command -Name "yarn"
+if (-not (Get-CommandPresence -Name "docker")) { throw "Required command 'docker' was not found in PATH." }
+if (-not (Get-CommandPresence -Name "powershell")) { throw "Required command 'powershell' was not found in PATH." }
+if (-not (Get-CommandPresence -Name "yarn")) { throw "Required command 'yarn' was not found in PATH." }
 
 Write-Host "[INFO] Cleaning up stale demo listeners (if any)..." -ForegroundColor Cyan
 Stop-KnownProcessOnPort -Port 6700 -AllowedProcessNames @("java", "javaw")
@@ -171,10 +170,30 @@ if (-not $backendReady -or -not $frontendReady) {
 
 if (-not $SkipPrecheck) {
 	Write-Host "[INFO] Running precheck..." -ForegroundColor Cyan
-	& $precheckScript
+	$precheckExitCode = 0
+	powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$precheckScript"
+	if ($null -ne $LASTEXITCODE) {
+		$precheckExitCode = [int]$LASTEXITCODE
+	}
+
+	if ($precheckExitCode -ne 0) {
+		Write-Host "[WARN] Precheck reported issues (exit code $precheckExitCode)." -ForegroundColor Yellow
+		Write-Host "[WARN] Fix the reported items and rerun: .\start-demo.ps1" -ForegroundColor Yellow
+
+		if ($FailOnPrecheck) {
+			throw "Precheck failed with exit code $precheckExitCode (FailOnPrecheck enabled)."
+		}
+
+		# Keep launcher success semantics in non-strict mode.
+		$global:LASTEXITCODE = 0
+	}
+	else {
+		$global:LASTEXITCODE = 0
+	}
 }
 else {
 	Write-Host "[INFO] Precheck skipped (SkipPrecheck switch provided)." -ForegroundColor Yellow
+	$global:LASTEXITCODE = 0
 }
 
 Write-Host "[INFO] OpenCare startup flow completed." -ForegroundColor Green
