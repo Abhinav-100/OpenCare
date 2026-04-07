@@ -90,7 +90,7 @@ docker compose -f "$composeFile" up -d postgres-app postgres-keycloak keycloak m
 
 # Backend and frontend are launched in separate windows to keep logs visible.
 Write-Info "Starting backend in new terminal window..."
-Start-InNewPowerShellWindow -Executable $shellExe -Title "OpenCare Backend" -WorkingDirectory $backendDir -Command ".\mvnw.cmd -Dmaven.test.skip=true spring-boot:run"
+Start-InNewPowerShellWindow -Executable $shellExe -Title "OpenCare Backend" -WorkingDirectory $backendDir -Command ".\mvnw.cmd -DskipTests spring-boot:run"
 
 Write-Info "Starting frontend in new terminal window..."
 Start-InNewPowerShellWindow -Executable $shellExe -Title "OpenCare Frontend" -WorkingDirectory $frontendDir -Command $frontendCommand

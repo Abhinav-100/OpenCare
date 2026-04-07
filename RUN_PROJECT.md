@@ -53,7 +53,7 @@ Open a new terminal:
 
 ```powershell
 Set-Location .\open-care-backend-dev
-.\mvnw.cmd -Dmaven.test.skip=true spring-boot:run
+.\mvnw.cmd -DskipTests spring-boot:run
 ```
 
 ### 3) Start frontend

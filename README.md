@@ -69,7 +69,7 @@ docker compose -f open-care-backend-dev/docker-compose.yml up -d postgres-app po
 Runs in `open-care-backend-dev`:
 
 ```powershell
-.\mvnw.cmd -Dmaven.test.skip=true spring-boot:run
+.\mvnw.cmd -DskipTests spring-boot:run
 ```
 
 ### Frontend window
@@ -129,7 +129,7 @@ By default, launcher startup completes even if precheck reports issues. Use `-Fa
 ```powershell
 cd open-care-backend-dev
 .\mvnw.cmd -DskipTests compile
-.\mvnw.cmd -Dmaven.test.skip=true spring-boot:run
+.\mvnw.cmd -DskipTests spring-boot:run
 ```
 
 ### Frontend not reachable

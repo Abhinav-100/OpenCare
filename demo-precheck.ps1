@@ -176,7 +176,7 @@ if ($backendResult.ok -and $backendResult.data.status -eq "UP") {
     Write-Pass "Backend is running"
 }
 else {
-    Write-Fail "Backend not reachable or readiness != UP" "run backend: Set-Location 'open-care-backend-dev'; & '.\\mvnw.cmd' @('-Dmaven.test.skip=true','spring-boot:run')"
+    Write-Fail "Backend not reachable or readiness != UP" "run backend: Set-Location 'open-care-backend-dev'; & '.\\mvnw.cmd' @('-DskipTests','spring-boot:run')"
 }
 
 # 2) Frontend availability
