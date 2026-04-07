@@ -75,6 +75,7 @@ const steps = [
   },
 ];
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function HealthSchemesPage() {
   return (
     <div className="min-h-screen bg-gray-50">

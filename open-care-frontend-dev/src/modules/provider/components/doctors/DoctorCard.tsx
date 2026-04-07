@@ -3,7 +3,6 @@ import {
 	Star,
 	Clock,
 	MessageCircle,
-	Calendar,
 	Eye,
 	UserCheck,
 	Building2,
@@ -92,10 +91,6 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
 
 							{/* Action Buttons */}
 							<div className="flex gap-3">
-								<Button className="bg-teal-600 hover:bg-teal-700 text-white">
-									<Calendar className="w-4 h-4 mr-2" />
-									Book Appointment
-								</Button>
 								<Link href={`/doctors/${doctor.id}`}>
 									<Button
 										variant="outline"

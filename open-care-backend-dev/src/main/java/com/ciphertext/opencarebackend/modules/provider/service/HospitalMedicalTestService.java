@@ -6,6 +6,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+/**
+ * Flow note: HospitalMedicalTestService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface HospitalMedicalTestService {
     Page<HospitalMedicalTest> getPaginatedDataWithFilters(MedicalTestFilter medicalTestFilter, Pageable pagingSort);
     List<HospitalMedicalTest> getMedicalTestsByHospitalId(Long hospitalId);

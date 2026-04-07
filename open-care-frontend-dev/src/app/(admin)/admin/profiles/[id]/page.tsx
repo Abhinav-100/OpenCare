@@ -40,6 +40,7 @@ import { Progress } from "@/modules/platform/components/ui/progress";
 import { getProfileById, ProfileDetailsResponse } from "@/modules/access/api/profile";
 import { getUserSession } from "@/shared/utils/auth-client";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function ProfileDetailsPage() {
   const router = useRouter();
   const params = useParams();

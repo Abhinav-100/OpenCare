@@ -2,6 +2,7 @@ import { baseUrl } from "@/shared/constants/config";
 import { BloodGroupResponse } from "@/shared/types/blood-groups";
 import { normalizeApiData } from "@/shared/utils/api-client";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchBloodGroups = async (): Promise<BloodGroupResponse> => {
   const response = await fetch(`${baseUrl}/blood-groups`, {
     method: "GET",

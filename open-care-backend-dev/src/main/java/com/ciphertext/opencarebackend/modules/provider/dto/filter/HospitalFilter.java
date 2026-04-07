@@ -9,6 +9,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * Flow note: HospitalFilter belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalFilter {
     private String name;
     private String bnName;

@@ -29,6 +29,10 @@ import java.util.stream.Collectors;
 @ConditionalOnProperty(prefix = "app.search", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Slf4j
 @RequiredArgsConstructor
+/**
+ * Flow note: DoctorSearchServiceImpl belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorSearchServiceImpl implements DoctorSearchService {
 
     private final DoctorRepository doctorRepository;

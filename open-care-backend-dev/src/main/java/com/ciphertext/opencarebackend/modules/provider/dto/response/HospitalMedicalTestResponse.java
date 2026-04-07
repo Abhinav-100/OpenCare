@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+/**
+ * Flow note: HospitalMedicalTestResponse belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalMedicalTestResponse {
     private long id;
     private HospitalResponse hospital;

@@ -4,6 +4,10 @@ import com.ciphertext.opencarebackend.modules.provider.dto.elasticsearch.filter.
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+/**
+ * Flow note: DoctorSearchService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorSearchService {
     void indexDoctor(Long id);
     void indexAllDoctors();

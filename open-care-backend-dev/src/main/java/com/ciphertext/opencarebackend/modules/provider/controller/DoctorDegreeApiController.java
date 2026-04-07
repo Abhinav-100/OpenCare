@@ -38,6 +38,10 @@ import java.util.List;
 @RequestMapping("/api/doctors")
 @RequiredArgsConstructor
 @Tag(name = "Doctor Degree Management", description = "API for managing doctor degree information including creation, retrieval, updating and deletion of degree records associated with doctors")
+/**
+ * Flow note: DoctorDegreeApiController belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorDegreeApiController {
 
     private final DoctorDegreeService doctorDegreeService;

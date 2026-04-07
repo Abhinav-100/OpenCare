@@ -9,6 +9,7 @@ import { Input } from "@/modules/platform/components/ui/input";
 import { Label } from "@/modules/platform/components/ui/label";
 import { forgotPassword } from "@/modules/access/api/auth";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function ForgotPasswordPage() {
 	const [email, setEmail] = useState("");
 	const [submitted, setSubmitted] = useState(false);

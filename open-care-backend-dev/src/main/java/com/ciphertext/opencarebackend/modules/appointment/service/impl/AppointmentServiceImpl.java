@@ -77,6 +77,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             filter = AppointmentFilter.builder().build();
         }
 
+        // Admins can query globally; non-admins are automatically scoped to own data.
         if (isAdmin(currentProfile, SecurityContextHolder.getContext().getAuthentication())) {
             return fetchAppointments(filter, pageable);
         }
@@ -148,6 +149,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointment.setPatientProfile(patientProfile);
 
+        // Validation order matters: structure -> references -> business rules -> slot availability.
         validateRequiredFields(appointment);
         hydrateReferences(appointment);
         validateDoctorBookingEligibility(appointment);
@@ -159,10 +161,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new BadRequestException("Selected time slot is not available");
         }
 
-        // Generate unique appointment number
+        // Generate readable booking ID shown to users/admin.
         appointment.setAppointmentNumber(generateAppointmentNumber());
 
-        // Set defaults
+        // Fill server-side defaults to keep API payload minimal.
         applyDefaults(appointment);
 
         return appointmentRepository.save(appointment);
@@ -218,6 +220,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new AccessDeniedException("Only doctors or admins can update appointment status");
         }
 
+        // Doctors have a narrower status transition set than admins.
         if (actor.getUserType() == UserType.DOCTOR
                 && !EnumSet.of(AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW)
                 .contains(status)) {
@@ -288,7 +291,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         doctorRepository.findById(doctorId)
             .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + doctorId));
 
-        // Get doctor's schedule for the day
+        // 1) Pull doctor's configured schedule for the requested day.
         DaysOfWeek dayOfWeek = DaysOfWeek.valueOf(date.getDayOfWeek().name());
         List<DoctorSchedule> schedules = doctorScheduleRepository.findByDoctorWorkplace_Doctor_IdAndDaysOfWeek(doctorId, dayOfWeek);
 
@@ -296,7 +299,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return List.of(); // Doctor not available on this day
         }
 
-        // Get existing appointments for this date
+        // 2) Pull already-booked appointments to mark collisions.
         List<Appointment> existingAppointments = appointmentRepository.findActiveAppointmentsByDoctorAndDate(
                 doctorId, date, CANCELLED_STATUSES);
 
@@ -306,13 +309,13 @@ public class AppointmentServiceImpl implements AppointmentService {
             LocalTime scheduleStart = schedule.getStartTime().toLocalTime();
             LocalTime scheduleEnd = schedule.getEndTime().toLocalTime();
 
-            // Generate slots
+            // 3) Split schedule windows into fixed-size slots.
             LocalTime slotStart = scheduleStart;
             while (slotStart.plusMinutes(DEFAULT_SLOT_DURATION).isBefore(scheduleEnd) ||
                    slotStart.plusMinutes(DEFAULT_SLOT_DURATION).equals(scheduleEnd)) {
                 LocalTime slotEnd = slotStart.plusMinutes(DEFAULT_SLOT_DURATION);
 
-                // Check if slot is available
+                // 4) A slot is available only if not booked and not in the past.
                 boolean isBooked = isSlotBooked(existingAppointments, slotStart, slotEnd);
                 boolean isPast = date.equals(LocalDate.now()) && slotStart.isBefore(LocalTime.now());
 
@@ -521,6 +524,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         Profile currentProfile = profileRepository.findByKeycloakUserId(keycloakUserId)
                 .orElseThrow(() -> new AccessDeniedException("Authenticated profile not found"));
 
+        // Access matrix:
+        // - admin/super-admin: full access
+        // - doctor: only assigned appointments
+        // - user(patient): only own appointments
         if (isAdmin(currentProfile, authentication)) {
             return;
         }

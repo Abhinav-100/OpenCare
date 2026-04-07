@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+/**
+ * Flow note: HospitalMedicalTestRequest belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalMedicalTestRequest {
     private Long hospitalId;
     @NotNull(message = "Medical test ID is required")

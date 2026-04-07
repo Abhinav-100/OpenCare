@@ -15,6 +15,10 @@ import com.ciphertext.opencarebackend.modules.user.dto.response.ProfileResponse;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+/**
+ * Flow note: DoctorResponse belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorResponse {
     private Long id;
     private String bmdcNo;

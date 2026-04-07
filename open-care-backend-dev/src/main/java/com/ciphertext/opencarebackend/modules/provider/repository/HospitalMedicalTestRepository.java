@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+/**
+ * Flow note: HospitalMedicalTestRepository belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface HospitalMedicalTestRepository extends JpaRepository<HospitalMedicalTest, Long> , JpaSpecificationExecutor<HospitalMedicalTest> {
     List<HospitalMedicalTest> findByHospitalId(Long hospitalId);
     Optional<HospitalMedicalTest> findByIdAndHospitalId(Long id, Long hospitalId);

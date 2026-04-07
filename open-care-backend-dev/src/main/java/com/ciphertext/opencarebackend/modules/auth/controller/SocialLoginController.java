@@ -17,6 +17,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth/social")
 @Tag(name = "Social Login", description = "OAuth/social login endpoints for redirect and callback handling")
+/**
+ * Flow note: SocialLoginController belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class SocialLoginController {
 
     @Value("${app.keycloak.server-url}")

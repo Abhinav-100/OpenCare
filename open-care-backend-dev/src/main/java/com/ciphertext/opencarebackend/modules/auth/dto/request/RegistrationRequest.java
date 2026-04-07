@@ -9,6 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+/**
+ * Flow note: RegistrationRequest belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class RegistrationRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")

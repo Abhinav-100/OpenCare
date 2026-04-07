@@ -35,6 +35,10 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+/**
+ * Flow note: DoctorDegreeServiceImpl belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorDegreeServiceImpl implements DoctorDegreeService {
 
     private final DoctorDegreeRepository doctorDegreeRepository;

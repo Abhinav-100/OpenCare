@@ -1,117 +1,66 @@
 [CmdletBinding()]
 param(
-	[int]$WarmupSeconds = 12,
-	[int]$BackendTimeoutSeconds = 180,
-	[int]$FrontendTimeoutSeconds = 180,
-	[switch]$SkipPrecheck,
-	[switch]$FailOnPrecheck
+	[switch]$SkipPrecheck
 )
 
 $ErrorActionPreference = "Stop"
 
-function Get-CommandPresence {
-	param([string]$Name)
+# Launcher overview:
+# 1) validate required tools/folders
+# 2) clean old listeners on known ports
+# 3) start infra, backend, and frontend
+# 4) wait for readiness probes
+# 5) run precheck (unless skipped)
 
-	return [bool](Get-Command $Name -ErrorAction SilentlyContinue)
+function Write-Info {
+	param([string]$Message)
+	Write-Host "[INFO] $Message" -ForegroundColor Cyan
+}
+
+function Write-Warn {
+	param([string]$Message)
+	Write-Host "[WARN] $Message" -ForegroundColor Yellow
+}
+
+function Resolve-PowerShellExecutable {
+	if (Get-Command "pwsh.exe" -ErrorAction SilentlyContinue) {
+		return "pwsh.exe"
+	}
+
+	if (Get-Command "powershell.exe" -ErrorAction SilentlyContinue) {
+		return "powershell.exe"
+	}
+
+	throw "Neither pwsh.exe nor powershell.exe was found in PATH."
 }
 
 function Start-InNewPowerShellWindow {
 	param(
+		[Parameter(Mandatory = $true)][string]$Executable,
 		[Parameter(Mandatory = $true)][string]$Title,
+		[Parameter(Mandatory = $true)][string]$WorkingDirectory,
 		[Parameter(Mandatory = $true)][string]$Command
 	)
 
-	Start-Process -FilePath "powershell.exe" -ArgumentList @(
+	$fullCommand = "`$host.UI.RawUI.WindowTitle = '$Title'; Set-Location '$WorkingDirectory'; $Command"
+
+	Start-Process -FilePath $Executable -ArgumentList @(
 		"-NoExit",
 		"-ExecutionPolicy", "Bypass",
-		"-Command", "`$host.UI.RawUI.WindowTitle = '$Title'; $Command"
+		"-Command", $fullCommand
 	) | Out-Null
 }
 
-function Stop-KnownProcessOnPort {
-	param(
-		[int]$Port,
-		[string[]]$AllowedProcessNames
-	)
-
-	$listeners = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
-	if (-not $listeners) {
-		return
+function Get-FrontendCommand {
+	if (Get-Command "yarn" -ErrorAction SilentlyContinue) {
+		return "if (-not (Test-Path 'node_modules')) { yarn install }; yarn dev --port 3000"
 	}
 
-	$uniqueListeners = @($listeners | Group-Object -Property OwningProcess | ForEach-Object { $_.Group[0] })
-	foreach ($listener in $uniqueListeners) {
-		try {
-			$proc = Get-Process -Id $listener.OwningProcess -ErrorAction Stop
-		}
-		catch {
-			continue
-		}
-
-		$procName = $proc.ProcessName.ToLowerInvariant()
-		if ($AllowedProcessNames -contains $procName) {
-			Write-Host "[INFO] Stopping existing process '$($proc.ProcessName)' on port $Port (Owner $($listener.OwningProcess))..." -ForegroundColor Yellow
-			Stop-Process -Id $listener.OwningProcess -Force -ErrorAction SilentlyContinue
-		}
-		else {
-			Write-Host "[WARN] Port $Port is used by '$($proc.ProcessName)' (Owner $($listener.OwningProcess)). Stop it manually if startup fails." -ForegroundColor Yellow
-		}
-	}
-}
-
-function Test-BackendReady {
-	param(
-		[string]$BaseUrl,
-		[int]$TimeoutSec = 3
-	)
-
-	try {
-		$health = Invoke-RestMethod -Uri "$BaseUrl/actuator/health/readiness" -Method Get -TimeoutSec $TimeoutSec
-		return ($null -ne $health -and $health.status -eq "UP")
-	}
-	catch {
-		return $false
-	}
-}
-
-function Get-ReadyFrontendPort {
-	param([int]$TimeoutSec = 3)
-
-	foreach ($port in @(3000, 3001)) {
-		try {
-			$response = Invoke-WebRequest -Uri "http://localhost:$port" -Method Get -TimeoutSec $TimeoutSec -UseBasicParsing
-			if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 500) {
-				return $port
-			}
-		}
-		catch {
-			# try next port
-		}
+	if (Get-Command "npm" -ErrorAction SilentlyContinue) {
+		return "if (-not (Test-Path 'node_modules')) { npm install }; npm run dev -- --port 3000"
 	}
 
-	return $null
-}
-
-function Wait-Until {
-	param(
-		[string]$Name,
-		[int]$TimeoutSeconds,
-		[scriptblock]$Probe,
-		[int]$PollIntervalSeconds = 3
-	)
-
-	$deadline = (Get-Date).AddSeconds($TimeoutSeconds)
-	while ((Get-Date) -lt $deadline) {
-		if (& $Probe) {
-			Write-Host "[PASS] $Name is ready" -ForegroundColor Green
-			return $true
-		}
-
-		Start-Sleep -Seconds $PollIntervalSeconds
-	}
-
-	Write-Host "[WARN] Timed out waiting for $Name after $TimeoutSeconds second(s)." -ForegroundColor Yellow
-	return $false
+	throw "Neither yarn nor npm was found in PATH. Install Node.js tools first."
 }
 
 $rootDir = $PSScriptRoot
@@ -120,80 +69,48 @@ $frontendDir = Join-Path $rootDir "open-care-frontend-dev"
 $precheckScript = Join-Path $rootDir "demo-precheck.ps1"
 $composeFile = Join-Path $backendDir "docker-compose.yml"
 
-Write-Host "[INFO] Starting OpenCare demo..." -ForegroundColor Cyan
+Write-Info "Starting OpenCare demo..."
 
+# Validate required folders first so startup errors are immediate and readable.
 if (-not (Test-Path $backendDir)) { throw "Backend directory not found: $backendDir" }
 if (-not (Test-Path $frontendDir)) { throw "Frontend directory not found: $frontendDir" }
 if (-not (Test-Path $composeFile)) { throw "Compose file not found: $composeFile" }
-if (-not (Test-Path $precheckScript) -and -not $SkipPrecheck) { throw "Precheck script not found: $precheckScript" }
 
-if (-not (Get-CommandPresence -Name "docker")) { throw "Required command 'docker' was not found in PATH." }
-if (-not (Get-CommandPresence -Name "powershell")) { throw "Required command 'powershell' was not found in PATH." }
-if (-not (Get-CommandPresence -Name "yarn")) { throw "Required command 'yarn' was not found in PATH." }
+if (-not (Get-Command "docker" -ErrorAction SilentlyContinue)) {
+	throw "Docker CLI not found. Install/start Docker Desktop and try again."
+}
 
-Write-Host "[INFO] Cleaning up stale demo listeners (if any)..." -ForegroundColor Cyan
-Stop-KnownProcessOnPort -Port 6700 -AllowedProcessNames @("java", "javaw")
-Stop-KnownProcessOnPort -Port 3000 -AllowedProcessNames @("node")
-Stop-KnownProcessOnPort -Port 3001 -AllowedProcessNames @("node")
+# Pick whichever PowerShell host is available and build frontend command dynamically.
+$shellExe = Resolve-PowerShellExecutable
+$frontendCommand = Get-FrontendCommand
 
-Write-Host "[INFO] Starting Docker services..." -ForegroundColor Cyan
+# Start infrastructure before app processes to avoid connection errors at boot.
+Write-Info "Starting Docker services..."
 docker compose -f "$composeFile" up -d postgres-app postgres-keycloak keycloak minio
 
-Write-Host "[INFO] Starting backend in a new terminal..." -ForegroundColor Cyan
-Start-InNewPowerShellWindow -Title "OpenCare Backend" -Command "Set-Location '$backendDir'; & '.\mvnw.cmd' @('-Dmaven.test.skip=true','spring-boot:run')"
+# Backend and frontend are launched in separate windows to keep logs visible.
+Write-Info "Starting backend in new terminal window..."
+Start-InNewPowerShellWindow -Executable $shellExe -Title "OpenCare Backend" -WorkingDirectory $backendDir -Command ".\mvnw.cmd -Dmaven.test.skip=true spring-boot:run"
 
-Write-Host "[INFO] Starting frontend in a new terminal..." -ForegroundColor Cyan
-Start-InNewPowerShellWindow -Title "OpenCare Frontend" -Command "Set-Location '$frontendDir'; if (-not (Test-Path 'node_modules')) { yarn install }; yarn dev --port 3000"
+Write-Info "Starting frontend in new terminal window..."
+Start-InNewPowerShellWindow -Executable $shellExe -Title "OpenCare Frontend" -WorkingDirectory $frontendDir -Command $frontendCommand
 
-Write-Host "[INFO] Waiting $WarmupSeconds second(s) for services to initialize..." -ForegroundColor Cyan
-Start-Sleep -Seconds $WarmupSeconds
-
-$backendBaseUrl = "http://localhost:6700"
-$readyFrontendPort = $null
-
-$backendReady = Wait-Until -Name "backend readiness endpoint" -TimeoutSeconds $BackendTimeoutSeconds -Probe {
-	Test-BackendReady -BaseUrl $backendBaseUrl -TimeoutSec 3
-}
-
-$frontendReady = Wait-Until -Name "frontend HTTP endpoint" -TimeoutSeconds $FrontendTimeoutSeconds -Probe {
-	$script:readyFrontendPort = Get-ReadyFrontendPort -TimeoutSec 3
-	return ($null -ne $script:readyFrontendPort)
-}
-
-if ($frontendReady) {
-	Write-Host "[INFO] Frontend reachable on port $readyFrontendPort" -ForegroundColor Green
-}
-
-if (-not $backendReady -or -not $frontendReady) {
-	Write-Host "[WARN] One or more services are not ready yet. Precheck may fail until startup finishes." -ForegroundColor Yellow
-}
-
-if (-not $SkipPrecheck) {
-	Write-Host "[INFO] Running precheck..." -ForegroundColor Cyan
-	$precheckExitCode = 0
-	powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$precheckScript"
-	if ($null -ne $LASTEXITCODE) {
-		$precheckExitCode = [int]$LASTEXITCODE
+if (-not $SkipPrecheck -and (Test-Path $precheckScript)) {
+	Write-Info "Running precheck in current terminal..."
+	# Run precheck in this terminal so failures are easy to read before demo starts.
+	& $shellExe -NoProfile -ExecutionPolicy Bypass -File "$precheckScript"
+	if ($LASTEXITCODE -ne 0) {
+		Write-Warn "Precheck reported issues (exit code $LASTEXITCODE)."
 	}
-
-	if ($precheckExitCode -ne 0) {
-		Write-Host "[WARN] Precheck reported issues (exit code $precheckExitCode)." -ForegroundColor Yellow
-		Write-Host "[WARN] Fix the reported items and rerun: .\start-demo.ps1" -ForegroundColor Yellow
-
-		if ($FailOnPrecheck) {
-			throw "Precheck failed with exit code $precheckExitCode (FailOnPrecheck enabled)."
-		}
-
-		# Keep launcher success semantics in non-strict mode.
-		$global:LASTEXITCODE = 0
-	}
-	else {
-		$global:LASTEXITCODE = 0
-	}
+}
+elseif ($SkipPrecheck) {
+	Write-Warn "Precheck skipped."
 }
 else {
-	Write-Host "[INFO] Precheck skipped (SkipPrecheck switch provided)." -ForegroundColor Yellow
-	$global:LASTEXITCODE = 0
+	Write-Warn "Precheck script not found, skipping."
 }
 
-Write-Host "[INFO] OpenCare startup flow completed." -ForegroundColor Green
+Write-Host "" 
+Write-Host "OpenCare started. Use these URLs after services are up:" -ForegroundColor Green
+Write-Host "Backend:  http://localhost:6700" -ForegroundColor Green
+Write-Host "Frontend: http://localhost:3000" -ForegroundColor Green

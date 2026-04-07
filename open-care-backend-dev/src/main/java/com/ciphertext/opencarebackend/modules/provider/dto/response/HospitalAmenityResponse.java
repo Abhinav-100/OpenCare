@@ -5,6 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
+/**
+ * Flow note: HospitalAmenityResponse belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalAmenityResponse {
     private Long id;
     private HospitalResponse hospital;

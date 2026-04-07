@@ -28,6 +28,10 @@ import java.util.stream.Collectors;
         name = "Hospital Medical Test Management",
         description = "API for managing hospital medical test amenities including creation, retrieval, updating and deletion of medical test records associated with hospitals"
 )
+/**
+ * Flow note: HospitalMedicalTestApiController belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalMedicalTestApiController {
 
     private final HospitalMedicalTestService hospitalMedicalTestService;

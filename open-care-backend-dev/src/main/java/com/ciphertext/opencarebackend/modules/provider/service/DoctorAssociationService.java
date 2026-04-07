@@ -11,6 +11,10 @@ import java.util.List;
 /**
  * @author Rakib
  */
+/**
+ * Flow note: DoctorAssociationService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorAssociationService {
     Page<DoctorAssociation> getPaginatedDataWithFilters(Pageable pageable);
     List<DoctorAssociation> getAllDoctorAssociations();

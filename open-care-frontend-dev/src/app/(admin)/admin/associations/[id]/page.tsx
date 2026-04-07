@@ -45,6 +45,7 @@ import {
   AddAssociationFormData,
 } from "@/modules/provider/validations/add-association-schema";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function EditAssociationPage() {
   const router = useRouter();
   const params = useParams();

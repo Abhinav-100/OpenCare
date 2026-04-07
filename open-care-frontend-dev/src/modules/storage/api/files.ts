@@ -10,6 +10,7 @@ import { normalizeApiData } from "@/shared/utils/api-client";
  * @param token - Optional token for server-side requests
  * @returns FileUploadResponse with photoUrl and presignedUrl
  */
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const uploadFile = async (
 	directory: DocumentType,
 	file: File,

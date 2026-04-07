@@ -24,6 +24,7 @@ import {
 } from "@/shared/types/dashboard";
 import { Card, CardContent } from "@/modules/platform/components/ui/card";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardOverview | null>(null);
   const [realTimeData, setRealTimeData] = useState<RealTimeStats | null>(null);

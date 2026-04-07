@@ -18,6 +18,10 @@ import com.ciphertext.opencarebackend.modules.shared.dto.response.UpazilaRespons
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+/**
+ * Flow note: HospitalResponse belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalResponse {
     private Integer id;
     private String name;

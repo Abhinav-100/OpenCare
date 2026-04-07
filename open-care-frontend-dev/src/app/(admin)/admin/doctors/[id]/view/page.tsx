@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader } from "@/modules/platform/components/ui/
 import { Skeleton } from "@/modules/platform/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/modules/platform/components/ui/alert";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function DoctorViewPage() {
 	const params = useParams();
 	const router = useRouter();

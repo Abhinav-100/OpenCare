@@ -4,6 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Flow note: ModuleRegisterRequest belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public record ModuleRegisterRequest(
         @Email @NotBlank String email,
         @NotBlank @Size(min = 8, max = 100) String password,

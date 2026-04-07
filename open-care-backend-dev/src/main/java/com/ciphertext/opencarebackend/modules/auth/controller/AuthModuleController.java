@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/modules/auth")
 @RequiredArgsConstructor
+/**
+ * Flow note: AuthModuleController belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class AuthModuleController {
 
     private final AuthModuleService authModuleService;

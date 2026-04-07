@@ -12,6 +12,10 @@ import java.util.List;
  * @author rakib
  */
 @Repository
+/**
+ * Flow note: DoctorAssociationRepository belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorAssociationRepository extends JpaRepository<DoctorAssociation, Long> {
     List<DoctorAssociation> findByDoctorId(Long doctorId);
     List<DoctorAssociation> findByAssociationId(Integer associationId);

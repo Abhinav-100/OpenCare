@@ -39,6 +39,7 @@ import {
 } from "@/modules/provider/validations/add-doctor-schema";
 import { District, Upazila, Union } from "@/shared/types/locations";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function AddDoctorPage() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedDistrictId, setSelectedDistrictId] = useState<number | null>(

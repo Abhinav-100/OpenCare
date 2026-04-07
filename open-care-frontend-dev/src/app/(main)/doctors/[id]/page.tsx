@@ -51,6 +51,7 @@ function getDisplayText(value: unknown): string {
 	return "";
 }
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function DoctorDetailPage() {
 	const { id } = useParams<{ id: string }>();
 	const [showBookingModal, setShowBookingModal] = useState(false);

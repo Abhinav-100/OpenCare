@@ -1,6 +1,7 @@
 import { AdminHeader } from "@/modules/admin/components/admin-header";
 import { SettingsForm } from "@/modules/admin/components/settings-form";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function SettingsPage() {
 	return (
 		<div className="flex flex-col">

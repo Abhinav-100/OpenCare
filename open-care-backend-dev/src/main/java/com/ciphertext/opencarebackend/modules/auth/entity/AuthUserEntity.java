@@ -12,6 +12,10 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "users")
+/**
+ * Flow note: AuthUserEntity belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class AuthUserEntity {
 
     @Id

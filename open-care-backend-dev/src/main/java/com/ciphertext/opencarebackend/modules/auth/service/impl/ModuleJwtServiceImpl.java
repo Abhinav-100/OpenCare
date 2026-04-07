@@ -13,6 +13,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Flow note: ModuleJwtServiceImpl belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class ModuleJwtServiceImpl implements ModuleJwtService {
 
     @Qualifier("moduleJwtEncoder")

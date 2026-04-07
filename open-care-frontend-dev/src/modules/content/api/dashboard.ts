@@ -12,6 +12,7 @@ import {
 /**
  * Fetches the dashboard overview statistics
  */
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export async function getDashboardOverview() {
   return apiRequest<DashboardOverview>("/superadmin/dashboard/overview", {
     method: "GET",

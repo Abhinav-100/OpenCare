@@ -13,6 +13,10 @@ import java.util.Set;
 
 @Getter
 @Setter
+/**
+ * Flow note: HospitalRequest belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalRequest {
     private Integer id;
 

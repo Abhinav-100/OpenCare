@@ -53,6 +53,7 @@ import { Doctor, DoctorDetailsResponse } from "@/shared/types/doctors";
 import { BloodGroup } from "@/shared/types/blood-groups";
 import { District, Upazila, Union } from "@/shared/types/locations";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function DoctorFormPage() {
 	const router = useRouter();
 	const params = useParams();

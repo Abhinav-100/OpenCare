@@ -10,6 +10,10 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+/**
+ * Flow note: KeycloakRegistrationRequest belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class KeycloakRegistrationRequest {
     private String username;
     private String email;

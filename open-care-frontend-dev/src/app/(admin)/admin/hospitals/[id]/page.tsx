@@ -50,6 +50,7 @@ import {
 } from "@/modules/provider/validations/add-hospital-schema";
 import { Hospital } from "@/shared/types/hospitals";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function HospitalFormPage() {
   const router = useRouter();
   const params = useParams();

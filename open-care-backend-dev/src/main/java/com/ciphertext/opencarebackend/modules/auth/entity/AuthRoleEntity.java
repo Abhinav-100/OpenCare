@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "roles")
+/**
+ * Flow note: AuthRoleEntity belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class AuthRoleEntity {
 
     @Id

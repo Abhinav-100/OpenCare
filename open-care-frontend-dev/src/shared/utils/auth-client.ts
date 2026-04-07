@@ -17,6 +17,7 @@ function decodeJwtPayload(token: string): Record<string, unknown> | null {
 /**
  * Check if user has admin role from the access token
  */
+// Auth flow: This file handles session/token actions used by login/logout/refresh flows.
 export function hasAdminRole(accessToken: string): boolean {
   const payload = decodeJwtPayload(accessToken);
   if (!payload) return false;

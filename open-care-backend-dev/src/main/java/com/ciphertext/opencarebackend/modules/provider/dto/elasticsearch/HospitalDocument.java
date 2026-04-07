@@ -16,6 +16,10 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "hospitals")
+/**
+ * Flow note: HospitalDocument belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalDocument {
     @Id
     private Integer id;

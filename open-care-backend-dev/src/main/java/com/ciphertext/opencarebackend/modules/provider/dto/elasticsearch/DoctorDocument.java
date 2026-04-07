@@ -14,6 +14,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "doctors")
+/**
+ * Flow note: DoctorDocument belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorDocument {
     @Id
     private Long id;

@@ -12,6 +12,10 @@ import java.util.Optional;
  * @author Sadman
  */
 @Repository
+/**
+ * Flow note: HospitalAmenityRepository belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface HospitalAmenityRepository extends JpaRepository<HospitalAmenity, Long>, JpaSpecificationExecutor<HospitalAmenity> {
 
     List<HospitalAmenity> findByHospitalId(Long hospitalId);

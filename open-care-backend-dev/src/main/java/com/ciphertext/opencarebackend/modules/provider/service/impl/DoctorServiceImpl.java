@@ -59,6 +59,10 @@ import static org.springframework.data.jpa.domain.Specification.where;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
+/**
+ * Flow note: DoctorServiceImpl belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final DoctorDegreeRepository doctorDegreeRepository;

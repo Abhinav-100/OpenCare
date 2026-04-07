@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+/**
+ * Flow note: KeycloakAdminService belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class KeycloakAdminService {
 
     private final String serverUrl;

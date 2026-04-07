@@ -29,6 +29,7 @@ import { getLatestHealthVitals } from "@/modules/clinical/api/health-vitals";
 import { HealthVitals } from "@/shared/types/health-vitals";
 import { Progress } from "@/modules/platform/components/ui/progress";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function HealthPage() {
   const [vitals, setVitals] = useState<HealthVitals | null>(null);
   const [loading, setLoading] = useState(true);

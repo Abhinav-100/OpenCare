@@ -12,6 +12,10 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+/**
+ * Flow note: DoctorWorkplaceRequest belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorWorkplaceRequest {
     @Positive(message = "Doctor ID must be positive")
     private Long doctorId;

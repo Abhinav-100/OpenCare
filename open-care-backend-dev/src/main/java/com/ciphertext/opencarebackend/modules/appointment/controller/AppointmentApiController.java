@@ -63,9 +63,11 @@ public class AppointmentApiController {
             @RequestParam(defaultValue = "appointmentDate") String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
 
+        // Build paging + sorting from query params.
         Sort.Direction sortDir = Sort.Direction.fromOptionalString(direction.toUpperCase()).orElse(Sort.Direction.DESC);
         Pageable pagingSort = PageRequest.of(page, size, Sort.by(sortDir, sort));
 
+        // Build dynamic filter object passed to the service layer.
         AppointmentFilter filter = AppointmentFilter.builder()
                 .appointmentNumber(appointmentNumber)
                 .patientProfileId(patientProfileId)
@@ -78,6 +80,7 @@ public class AppointmentApiController {
                 .hospitalId(hospitalId)
                 .build();
 
+        // Service returns entities; controller maps to API-safe response DTOs.
         Page<Appointment> pageAppointments = appointmentService.getPaginatedDataWithFilters(filter, pagingSort);
         Page<AppointmentResponse> responses = pageAppointments.map(appointmentMapper::toResponse);
 
@@ -123,6 +126,7 @@ public class AppointmentApiController {
     public ResponseEntity<AppointmentResponse> createAppointment(
             @Valid @RequestBody AppointmentRequest request,
             @AuthenticationPrincipal Jwt jwt) {
+        // Authenticated subject becomes the patient owner of this booking.
         String keycloakUserId = jwt.getSubject();
         Appointment appointment = appointmentMapper.toEntity(request);
         appointment = appointmentService.createAppointment(appointment, keycloakUserId);
@@ -158,6 +162,7 @@ public class AppointmentApiController {
             @PathVariable Long id,
             @RequestParam(required = false) String reason,
             @AuthenticationPrincipal Jwt jwt) {
+        // Store who cancelled for audit/debugging.
         String cancelledBy = jwt.getClaimAsString("preferred_username");
         appointmentService.cancelAppointment(id, reason, cancelledBy);
         return ResponseEntity.noContent().build();

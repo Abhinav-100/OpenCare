@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: "View and manage your doctor appointments on OpenCare.",
 };
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function AppointmentsPage() {
   return (
     <Suspense

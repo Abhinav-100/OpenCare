@@ -8,6 +8,7 @@ import {
 import { AddDoctorFormData } from "@/modules/provider/validations/add-doctor-schema";
 import { apiGet, apiPost, apiPut, buildUrl } from "@/shared/utils/api-client";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchDoctors = async (
 	params: Record<string, unknown> = {}
 ): Promise<DoctorListResponse> => {

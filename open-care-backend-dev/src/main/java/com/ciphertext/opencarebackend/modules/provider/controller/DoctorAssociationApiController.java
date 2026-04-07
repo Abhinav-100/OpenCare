@@ -28,6 +28,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/doctors")
 @RequiredArgsConstructor
 @Tag(name = "Doctor Association Management", description = "API for creating, retrieving, updating, and deleting doctor associations")
+/**
+ * Flow note: DoctorAssociationApiController belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorAssociationApiController {
     private final DoctorAssociationService doctorAssociationService;
     private final DoctorAssociationMapper doctorAssociationMapper;

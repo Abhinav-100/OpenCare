@@ -30,6 +30,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/doctors")
 @RequiredArgsConstructor
 @Tag(name = "Doctor Workplace Management", description = "API for managing doctor workplace information including creation, retrieval, updating and deletion of workplace records associated with doctors")
+/**
+ * Flow note: DoctorWorkplaceApiController belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorWorkplaceApiController {
     private final DoctorWorkplaceService doctorWorkplaceService;
     private final DoctorWorkplaceMapper doctorWorkplaceMapper;

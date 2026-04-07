@@ -25,6 +25,7 @@ function getFriendlyLoginError(rawMessage: string, status?: number): string {
 	return "Login failed. Please try again.";
 }
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const login = async (
 	loginData: LoginFormData
 ): Promise<LoginResponse> => {

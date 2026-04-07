@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+/**
+ * Flow note: DoctorSelfRegistrationRequest belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorSelfRegistrationRequest {
 
     @NotBlank(message = "Email is required")

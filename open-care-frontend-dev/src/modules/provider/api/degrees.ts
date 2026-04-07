@@ -3,6 +3,7 @@
 import { Degree, DoctorDegree, AddDoctorDegreeResponse } from "@/shared/types/degrees";
 import { apiGet, apiPost } from "@/shared/utils/api-client";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchDegrees = async (): Promise<Degree[]> => {
 	const response = await apiGet<Degree[]>("/degrees");
 

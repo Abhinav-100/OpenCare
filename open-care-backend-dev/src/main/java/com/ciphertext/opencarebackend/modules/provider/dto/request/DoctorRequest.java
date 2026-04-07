@@ -10,6 +10,10 @@ import java.util.Set;
 
 @Getter
 @Setter
+/**
+ * Flow note: DoctorRequest belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorRequest {
     private Long id;
 

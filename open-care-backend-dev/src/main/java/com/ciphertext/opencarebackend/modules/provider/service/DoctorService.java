@@ -12,6 +12,10 @@ import java.util.Map;
 /**
  * @author Sadman
  */
+/**
+ * Flow note: DoctorService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorService {
     Long getDoctorCount();
     List<Doctor> getAllDoctors();

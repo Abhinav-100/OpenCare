@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/modules/platform/components/ui/alert"
 import { DetailView } from "@/modules/admin/components/detail-view";
 import { buildInstitutionDetailSections } from "@/modules/admin/components/build-institution-sections";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function InstitutionViewPage() {
 	const params = useParams();
 	const router = useRouter();

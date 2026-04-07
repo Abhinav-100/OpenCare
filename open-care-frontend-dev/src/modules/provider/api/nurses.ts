@@ -19,6 +19,7 @@ const buildQueryString = (params: QueryParams): string => {
   return queryParams.toString();
 };
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchNurses = async (
   params: QueryParams
 ): Promise<NurseListResponse> => {

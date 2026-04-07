@@ -26,6 +26,12 @@ vi.mock("@/modules/clinical/api/appointments", () => ({
 	createAppointment: vi.fn(),
 }));
 
+vi.mock("@/modules/access/context/auth-context", () => ({
+	useAuth: () => ({
+		isAuthenticated: true,
+	}),
+}));
+
 vi.mock("@/modules/platform/components/ui/dialog", () => ({
 	Dialog: ({ open, children }: { open: boolean; children: any }) =>
 		open ? React.createElement("div", null, children) : null,

@@ -18,6 +18,10 @@ import java.util.Optional;
  * @author Sadman
  */
 @Repository
+/**
+ * Flow note: DoctorDegreeRepository belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorDegreeRepository extends JpaRepository<DoctorDegree, Long> {
 
     /**

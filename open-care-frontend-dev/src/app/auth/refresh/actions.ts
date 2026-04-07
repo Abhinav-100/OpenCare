@@ -2,6 +2,7 @@
 
 import { refreshAccessToken } from "@/shared/utils/auth";
 
+// Auth flow: This file handles session/token actions used by login/logout/refresh flows.
 export interface RefreshState {
 	success: boolean;
 	error?: string;

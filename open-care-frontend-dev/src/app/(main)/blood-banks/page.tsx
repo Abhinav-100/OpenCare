@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   keywords: ["blood bank", "blood donation", "blood availability", "Odisha", "healthcare"],
 };
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function BloodBanksPage() {
   return (
     <Suspense

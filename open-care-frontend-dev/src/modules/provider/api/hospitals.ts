@@ -9,6 +9,7 @@ import {
 import { AddHospitalFormData } from "@/modules/provider/validations/add-hospital-schema";
 import { apiGet, apiPost, apiPut, buildUrl } from "@/shared/utils/api-client";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchHospitals = async (
 	params: Record<string, unknown> = {}
 ): Promise<HospitalListResponse> => {

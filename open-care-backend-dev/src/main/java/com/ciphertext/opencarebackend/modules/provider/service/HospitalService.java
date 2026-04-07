@@ -11,6 +11,10 @@ import java.util.List;
 /**
  * @author Sadman
  */
+/**
+ * Flow note: HospitalService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface HospitalService {
     Long getHospitalCount();
     List<Hospital> getAllHospitals();

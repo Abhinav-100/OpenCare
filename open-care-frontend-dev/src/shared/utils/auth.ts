@@ -4,6 +4,7 @@ import { LoginResponse } from "@/shared/types/auth";
 /**
  * Get the access token from cookies
  */
+// Auth flow: This file handles session/token actions used by login/logout/refresh flows.
 export async function getAccessToken(): Promise<string | undefined> {
   const cookieStore = await cookies();
   return cookieStore.get("access_token")?.value;

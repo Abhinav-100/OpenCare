@@ -7,6 +7,10 @@ import java.util.List;
 
 @Builder
 @Getter
+/**
+ * Flow note: DoctorFilter belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorFilter {
     private String name;
     private String bnName;

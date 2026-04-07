@@ -7,6 +7,7 @@ import {
 } from "@/shared/types/locations";
 import { normalizeApiData } from "@/shared/utils/api-client";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchDivisions = async (): Promise<DivisionResponse> => {
 	const response = await fetch(`${baseUrl}/divisions`, {
 		method: "GET",

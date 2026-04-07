@@ -5,6 +5,7 @@ import { normalizeApiData } from "@/shared/utils/api-client";
 /**
  * Get latest health vitals for the current user
  */
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const getLatestHealthVitals = async (
   token: string
 ): Promise<HealthVitals> => {

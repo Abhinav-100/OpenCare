@@ -5,6 +5,7 @@ import type {
   BloodInventoryItem,
 } from "@/shared/types/blood-banks";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchBloodBanks = async (
   params: Record<string, unknown> = {}
 ): Promise<BloodBankListResponse> => {

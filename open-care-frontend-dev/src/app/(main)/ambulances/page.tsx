@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   keywords: ["ambulance", "emergency", "medical transport", "Odisha", "healthcare"],
 };
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function AmbulancesPage() {
   return (
     <Suspense

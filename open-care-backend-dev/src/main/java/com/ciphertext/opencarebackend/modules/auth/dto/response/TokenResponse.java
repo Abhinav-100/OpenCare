@@ -7,6 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+/**
+ * Flow note: TokenResponse belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class TokenResponse {
     private String access_token;
     private String refresh_token;

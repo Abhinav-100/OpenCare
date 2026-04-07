@@ -2,6 +2,7 @@ import { ModuleAuthResponse } from "@/shared/types/modules";
 
 const MODULE_SESSION_KEY = "module_user_session";
 
+// Auth flow: This file handles session/token actions used by login/logout/refresh flows.
 export function getModuleSession(): ModuleAuthResponse | null {
   if (typeof window === "undefined") return null;
 

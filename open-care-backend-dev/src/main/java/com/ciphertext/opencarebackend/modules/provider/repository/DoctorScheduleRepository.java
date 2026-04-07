@@ -11,6 +11,10 @@ import java.util.List;
  * @author Sadman
  */
 @Repository
+/**
+ * Flow note: DoctorScheduleRepository belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, Long> {
     long countDoctorScheduleByDoctorWorkplace_Doctor_Id(Long doctorId);
 

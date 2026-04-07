@@ -6,6 +6,7 @@ import { apiGet, apiPost, apiPut, buildUrl } from "@/shared/utils/api-client";
 /**
  * Get current user's profile
  */
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const getSelfProfile = async (): Promise<UserProfile> => {
 	const response = await apiGet<UserProfile>("/profiles/self");
 

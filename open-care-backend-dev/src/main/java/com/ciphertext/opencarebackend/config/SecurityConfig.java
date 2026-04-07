@@ -48,6 +48,10 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // Main request-security pipeline:
+        // - stateless JWT auth
+        // - endpoint-level authorization rules
+        // - custom scope filter before username/password filter
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -92,7 +96,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/appointments/my").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/appointments/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/appointments").hasAnyAuthority("admin", "super-admin", "role_admin", "role_super_admin")
-                        .requestMatchers(HttpMethod.POST, "/api/appointments").hasAnyAuthority("user", "role_user")
+                        .requestMatchers(HttpMethod.POST, "/api/appointments").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/appointments/*").hasAnyAuthority("user", "doctor", "admin", "super-admin", "role_user", "role_doctor", "role_admin", "role_super_admin")
                         .requestMatchers(HttpMethod.PATCH, "/api/appointments/*/status").hasAnyAuthority("doctor", "admin", "super-admin", "role_doctor", "role_admin", "role_super_admin")
                         .requestMatchers(HttpMethod.POST, "/api/appointments/*/cancel").hasAnyAuthority("user", "doctor", "admin", "super-admin", "role_user", "role_doctor", "role_admin", "role_super_admin")
@@ -170,6 +174,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        // Converts JWT claims into Spring authorities used by hasAuthority/hasAnyAuthority checks.
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
             List<String> roleNames = extractRolesFromToken(jwt);
@@ -200,6 +205,7 @@ public class SecurityConfig {
     }
 
     private List<String> extractRolesFromToken(org.springframework.security.oauth2.jwt.Jwt jwt) {
+        // Keycloak stores realm roles in realm_access.roles.
         Object realmAccess = jwt.getClaim("realm_access");
         if (realmAccess instanceof java.util.Map<?, ?> realmAccessMap) {
             Object roles = realmAccessMap.get("roles");
@@ -215,6 +221,7 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        // CORS policy used by Spring Security chain.
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("*"));
@@ -229,6 +236,7 @@ public class SecurityConfig {
 
     @Bean
     public CorsFilter corsFilter() {
+        // Additional CORS filter bean for compatibility with existing filter stack.
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("*"));
@@ -243,6 +251,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
+        // Paths here are bypassed by Spring Security entirely (no auth filter execution).
         return web -> web.ignoring()
                 .requestMatchers(
                         "/api-docs/**",

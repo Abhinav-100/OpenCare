@@ -12,8 +12,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class OpenCareBackendApplication {
 
     public static void main(String[] args) {
+        // Create the Spring application explicitly so custom listeners can be attached before boot.
         SpringApplication application = new SpringApplication(OpenCareBackendApplication.class);
+        // Gives a friendly error when configured port is already occupied.
         application.addListeners(new PortConflictFailureListener());
+        // Bootstraps Spring context: configs -> beans -> web server -> ready state.
         application.run(args);
     }
 

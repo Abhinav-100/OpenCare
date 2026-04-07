@@ -21,6 +21,10 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+/**
+ * Flow note: ModuleJwtAuthenticationFilter belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class ModuleJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final ObjectProvider<ModuleJwtService> moduleJwtServiceProvider;

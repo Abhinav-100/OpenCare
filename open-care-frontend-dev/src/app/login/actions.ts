@@ -4,6 +4,7 @@ import { login } from "@/modules/access/api/auth";
 import { LoginResponse } from "@/shared/types/auth";
 import { saveAuthTokens } from "@/shared/utils/auth";
 
+// Auth flow: This file handles session/token actions used by login/logout/refresh flows.
 export interface LoginState {
 	success: boolean;
 	error?: string;

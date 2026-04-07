@@ -13,6 +13,7 @@ interface FetchSocialOrganizationsParams {
   name?: string;
 }
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export async function fetchSocialOrganizations({
   page,
   size,

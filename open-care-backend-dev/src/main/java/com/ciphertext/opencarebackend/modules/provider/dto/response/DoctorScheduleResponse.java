@@ -7,6 +7,10 @@ import java.sql.Time;
 
 @Getter
 @Setter
+/**
+ * Flow note: DoctorScheduleResponse belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorScheduleResponse {
     private Long id;
     private DoctorWorkplaceResponse doctorWorkplace;

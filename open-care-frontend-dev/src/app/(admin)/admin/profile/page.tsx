@@ -25,6 +25,7 @@ import { getUserSession } from "@/shared/utils/auth-client";
 import { getSelfProfile } from "@/modules/access/api/profile";
 import { UserProfile } from "@/shared/types/profile";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function ProfilePage() {
 	const [profile, setProfile] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(true);

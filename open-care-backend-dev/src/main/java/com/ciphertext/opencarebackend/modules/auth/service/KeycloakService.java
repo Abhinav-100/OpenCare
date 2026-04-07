@@ -20,6 +20,10 @@ import java.net.URI;
 import java.util.List;
 
 @Service
+/**
+ * Flow note: KeycloakService belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class KeycloakService {
 
     private final WebClient webClient;

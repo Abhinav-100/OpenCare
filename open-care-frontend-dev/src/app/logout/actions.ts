@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { clearAuthTokens } from "@/shared/utils/auth";
 
+// Auth flow: This file handles session/token actions used by login/logout/refresh flows.
 export async function logout() {
 	try {
 		// Clear all auth tokens from cookies

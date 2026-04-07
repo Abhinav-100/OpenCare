@@ -17,12 +17,12 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
 		pathname?.startsWith("/signup") ||
 		pathname?.startsWith("/auth");
 
-	// If it's an admin or auth route, don't show header and footer
+	// Admin/auth pages use their own focused layouts.
 	if (isAdminRoute || isAuthRoute) {
 		return <>{children}</>;
 	}
 
-	// For all other routes, show header and footer
+	// Public and main app pages share the standard site chrome.
 	return (
 		<>
 			<Header />

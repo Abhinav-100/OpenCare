@@ -10,6 +10,10 @@ import java.util.List;
 /**
  * @author Sadman
  */
+/**
+ * Flow note: DoctorWorkplaceService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorWorkplaceService {
     List<DoctorWorkplace> getDoctorWorkplacesByDoctorId(Long doctorId);
     List<DoctorWorkplace> getDoctorWorkplacesByHospitalId(Integer hospitalId);

@@ -6,9 +6,11 @@ import type {
   CreateAppointmentRequest,
 } from "@/shared/types/appointments";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export const fetchAppointments = async (
   params: Record<string, unknown> = {}
 ): Promise<AppointmentListResponse> => {
+  // Admin/listing endpoint with optional filter/paging params.
   const url = buildUrl("/appointments", params);
   const response = await apiGet<AppointmentListResponse>(url);
   if (!response.ok) throw new Error(response.error || "Failed to fetch appointments");
@@ -16,6 +18,7 @@ export const fetchAppointments = async (
 };
 
 export const fetchMyAppointments = async (): Promise<Appointment[]> => {
+  // Uses currently logged-in token; backend resolves user from JWT subject.
   const response = await apiGet<Appointment[]>("/appointments/my");
   if (!response.ok) throw new Error(response.error || "Failed to fetch your appointments");
   return response.data as Appointment[];
@@ -31,6 +34,7 @@ export const fetchDoctorSlots = async (
   doctorId: number,
   date: string
 ): Promise<AvailableSlot[]> => {
+  // Slot API returns backend-computed availability (schedule - existing bookings).
   const response = await apiGet<AvailableSlot[]>(
     `/appointments/doctor/${doctorId}/slots?date=${date}`
   );
@@ -41,12 +45,14 @@ export const fetchDoctorSlots = async (
 export const createAppointment = async (
   data: CreateAppointmentRequest
 ): Promise<Appointment> => {
+  // Booking payload is validated server-side for doctor status and slot overlap.
   const response = await apiPost<Appointment>("/appointments", data);
   if (!response.ok) throw new Error(response.error || "Failed to create appointment");
   return response.data as Appointment;
 };
 
 export const cancelAppointment = async (id: number, reason?: string): Promise<void> => {
+  // API expects cancel as POST with optional reason query parameter.
   const url = reason
     ? `/appointments/${id}/cancel?reason=${encodeURIComponent(reason)}`
     : `/appointments/${id}/cancel`;

@@ -28,6 +28,7 @@ import type { District } from "@/shared/types/locations";
 import type { BloodGroup } from "@/shared/types/blood-groups";
 import type { Gender } from "@/shared/types/gender";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

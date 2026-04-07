@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Feature flag: when true, only core demo scope routes remain reachable.
 const CORE_SCOPE_ONLY_ENABLED = process.env.NEXT_PUBLIC_CORE_SCOPE_ONLY !== "false";
 
 const CORE_ADMIN_ALLOWED_PATHS = [
@@ -69,6 +70,7 @@ export function middleware(request: NextRequest) {
 		request.nextUrl.pathname.startsWith(route)
 	);
 
+	// Scope gate: hide non-core routes during demo mode.
 	if (
 		CORE_SCOPE_ONLY_ENABLED &&
 		NON_CORE_PUBLIC_PATHS.some(
@@ -85,13 +87,14 @@ export function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL("/login", request.url));
 		}
 
-		// Has token but not admin = redirect to user dashboard
+		// Token exists, but role is not admin -> deny admin area.
 		if (!hasAdminRole(accessToken)) {
 			const url = new URL("/dashboard", request.url);
 			url.searchParams.set("error", "access_denied");
 			return NextResponse.redirect(url);
 		}
 
+		// In core-only mode, admin users are also constrained to approved admin pages.
 		if (CORE_SCOPE_ONLY_ENABLED && !isAllowedCoreAdminPath(request.nextUrl.pathname)) {
 			return NextResponse.redirect(new URL("/admin/doctors", request.url));
 		}
@@ -107,6 +110,7 @@ export function middleware(request: NextRequest) {
 
 	// If already authenticated and trying to access auth routes, redirect based on role
 	if (isAuthRoute && accessToken) {
+		// Logged-in users should skip login/signup and land on their default area.
 		const isAdmin = hasAdminRole(accessToken);
 		const redirectTo = isAdmin ? "/admin" : "/dashboard";
 		return NextResponse.redirect(new URL(redirectTo, request.url));

@@ -38,6 +38,10 @@ import static org.springframework.data.jpa.domain.Specification.where;
 @Service
 @Transactional
 @RequiredArgsConstructor
+/**
+ * Flow note: HospitalServiceImpl belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;

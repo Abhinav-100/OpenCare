@@ -9,6 +9,10 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
+/**
+ * Flow note: RegistrationResponse belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class RegistrationResponse {
     private String message;
     private String userId;

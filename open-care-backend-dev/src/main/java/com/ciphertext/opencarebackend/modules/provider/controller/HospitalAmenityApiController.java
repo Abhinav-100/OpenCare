@@ -26,6 +26,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/hospitals")
 @RequiredArgsConstructor
 @Tag(name = "Hospital Amenity Management", description = "API for managing hospital amenity information including creation, retrieval, updating and deletion of amenity records associated with hospitals")
+/**
+ * Flow note: HospitalAmenityApiController belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalAmenityApiController {
     private final HospitalAmenityService hospitalAmenityService;
     private final HospitalAmenityMapper hospitalAmenityMapper;

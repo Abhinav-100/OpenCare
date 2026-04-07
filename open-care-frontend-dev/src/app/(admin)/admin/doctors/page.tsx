@@ -13,6 +13,7 @@ import { Skeleton } from "@/modules/platform/components/ui/skeleton";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function DoctorsPage() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const router = useRouter();

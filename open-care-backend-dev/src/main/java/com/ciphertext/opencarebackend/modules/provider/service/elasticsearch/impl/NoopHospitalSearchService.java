@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @ConditionalOnProperty(prefix = "app.search", name = "enabled", havingValue = "false")
+/**
+ * Flow note: NoopHospitalSearchService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class NoopHospitalSearchService implements HospitalSearchService {
 
     @Override

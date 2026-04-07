@@ -28,6 +28,7 @@ function requireModuleAuthHeaders(): Record<string, string> {
   return headers;
 }
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export async function moduleRegister(
   payload: ModuleRegisterRequest
 ): Promise<ModuleAuthResponse> {

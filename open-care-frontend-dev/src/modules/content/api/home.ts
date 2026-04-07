@@ -2,6 +2,7 @@
 
 import { apiGet } from "@/shared/utils/api-client";
 
+// API flow: This module wraps backend endpoints and returns typed data for UI/hooks.
 export interface HomeStats {
 	totalDoctors: number;
 	totalHospitals: number;

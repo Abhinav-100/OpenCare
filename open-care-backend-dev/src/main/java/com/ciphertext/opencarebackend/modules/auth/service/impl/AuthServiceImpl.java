@@ -31,6 +31,10 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+/**
+ * Flow note: AuthServiceImpl belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class AuthServiceImpl implements AuthService {
 
     private final KeycloakService keycloakService;

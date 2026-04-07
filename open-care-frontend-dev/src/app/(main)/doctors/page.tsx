@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 	},
 };
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function DoctorsPage() {
 	return (
 		// Suspense boundary required by Next.js when a child client component

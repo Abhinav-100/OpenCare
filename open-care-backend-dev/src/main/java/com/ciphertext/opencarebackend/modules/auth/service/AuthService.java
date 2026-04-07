@@ -2,6 +2,10 @@ package com.ciphertext.opencarebackend.modules.auth.service;
 import com.ciphertext.opencarebackend.modules.auth.dto.request.RegistrationRequest;
 import com.ciphertext.opencarebackend.modules.auth.dto.request.DoctorSelfRegistrationRequest;
 import com.ciphertext.opencarebackend.modules.auth.dto.response.RegistrationResponse;
+/**
+ * Flow note: AuthService belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface AuthService {
     /**
      * Registers a new user with the provided registration request.

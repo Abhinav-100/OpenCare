@@ -14,6 +14,7 @@ import { usePermissions } from "@/modules/platform/hooks/use-permissions";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function SocialOrganizationsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({

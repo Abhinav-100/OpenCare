@@ -17,6 +17,10 @@ import java.util.Base64;
 
 @Configuration
 @EnableConfigurationProperties(ModuleJwtProperties.class)
+/**
+ * Flow note: ModuleJwtConfig belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class ModuleJwtConfig {
 
     @Bean

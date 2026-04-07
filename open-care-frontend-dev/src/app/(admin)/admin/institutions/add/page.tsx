@@ -37,6 +37,7 @@ import {
 import { District, Upazila } from "@/shared/types/locations";
 import { REGION_CONFIG } from "@/shared/constants/region";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function AddInstitutionPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDistrictId, setSelectedDistrictId] = useState<number | null>(

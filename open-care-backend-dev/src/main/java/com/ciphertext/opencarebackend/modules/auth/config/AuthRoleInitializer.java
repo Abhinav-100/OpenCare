@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
+/**
+ * Flow note: AuthRoleInitializer belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class AuthRoleInitializer {
 
     private final AuthRoleRepository authRoleRepository;

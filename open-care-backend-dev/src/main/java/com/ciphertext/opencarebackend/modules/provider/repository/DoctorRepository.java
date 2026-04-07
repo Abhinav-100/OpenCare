@@ -12,6 +12,10 @@ import java.util.Optional;
  * @author Sadman
  */
 @Repository
+/**
+ * Flow note: DoctorRepository belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface DoctorRepository  extends JpaRepository<Doctor, Long>, JpaSpecificationExecutor<Doctor> {
     Optional<Doctor> findByProfileKeycloakUserId(String keycloakUserId);
     Optional<Doctor> findByProfileEmail(String email);

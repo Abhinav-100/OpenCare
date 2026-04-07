@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/modules/platform/components/ui/alert"
 import { DetailView } from "@/modules/admin/components/detail-view";
 import { buildHospitalDetailSections } from "@/modules/admin/components/build-hospital-sections";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function HospitalViewPage() {
 	const params = useParams();
 	const router = useRouter();

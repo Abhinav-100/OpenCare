@@ -23,6 +23,10 @@ import java.util.Map;
 @RequestMapping("/api/public/doctors")
 @RequiredArgsConstructor
 @Tag(name = "Public Doctor Search", description = "API for publicly searching doctor information")
+/**
+ * Flow note: PublicDoctorSearchController belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class PublicDoctorSearchController {
 
     private final DoctorSearchService doctorSearchService;

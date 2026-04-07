@@ -26,6 +26,7 @@ import { Button } from "@/modules/platform/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/modules/platform/components/ui/card";
 import { fetchHospitalDetailsById } from "@/modules/provider/api/hospitals";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function HospitalDetailPage() {
 	const { id } = useParams<{ id: string }>();
 

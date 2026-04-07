@@ -15,6 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
+/**
+ * Flow note: ModuleSecurityConfig belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class ModuleSecurityConfig {
 
     private final ModuleJwtAuthenticationFilter moduleJwtAuthenticationFilter;

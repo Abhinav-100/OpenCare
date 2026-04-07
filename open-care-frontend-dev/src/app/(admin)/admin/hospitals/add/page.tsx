@@ -46,6 +46,7 @@ import {
 	AddHospitalFormData,
 } from "@/modules/provider/validations/add-hospital-schema";
 
+// Page flow: This route renders a screen entry and delegates business/data logic to module components.
 export default function AddHospitalPage() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedDistrictId, setSelectedDistrictId] = useState<number | null>(

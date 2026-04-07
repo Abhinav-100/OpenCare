@@ -27,6 +27,14 @@ export default function Header() {
 	const { t } = useLanguage();
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [userMenuOpen, setUserMenuOpen] = useState(false);
+	const desktopButtonBaseClass =
+		"inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-[250ms] ease-in-out active:scale-[0.97]";
+	const desktopNavPillClass =
+		`${desktopButtonBaseClass} border border-teal-600/70 bg-white/55 text-teal-700 shadow-sm shadow-teal-200/35 hover:bg-emerald-100/80 hover:border-emerald-600/65 hover:shadow-[0_6px_14px_-10px_rgba(5,150,105,0.45)]`;
+	const mobileNavPillClass =
+		"flex items-center gap-3 px-3 py-3 rounded-full border border-teal-600/65 bg-white/55 text-teal-700 font-medium shadow-sm shadow-teal-200/35 transition-all duration-[250ms] ease-in-out hover:bg-emerald-100/80 hover:border-emerald-600/65 hover:shadow-[0_6px_14px_-10px_rgba(5,150,105,0.45)] active:scale-[0.97]";
+	const authSignInButtonClass =
+		`${desktopButtonBaseClass} border border-teal-700/85 bg-white/60 text-teal-700 shadow-sm shadow-teal-200/35 hover:bg-emerald-100/80 hover:border-emerald-700/70 hover:shadow-[0_6px_14px_-10px_rgba(5,150,105,0.45)]`;
 
 	// Navigation links with translations
 	const navLinks = [
@@ -54,9 +62,9 @@ export default function Header() {
 	const dashboardLabel = isAdmin ? "Admin Panel" : "Dashboard";
 
 	return (
-		<header className="bg-white/95 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50 transition-all duration-300 shadow-sm">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex justify-between items-center h-20">
+		<header className="bg-gradient-to-r from-teal-50/95 via-emerald-50/90 to-teal-100/90 backdrop-blur-md border-b border-teal-100/80 sticky top-0 z-50 transition-all duration-300 ease-in-out shadow-[0_8px_24px_-18px_rgba(13,148,136,0.45)]">
+			<div className="max-w-none mx-auto pl-4 pr-2 sm:pl-6 sm:pr-3 lg:pl-8 lg:pr-4">
+				<div className="flex items-center h-20">
 					{/* Logo */}
 					<Link
 						href="/"
@@ -73,14 +81,14 @@ export default function Header() {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<nav className="hidden lg:flex items-center space-x-2">
+					<nav className="hidden lg:flex items-center gap-3 ml-10">
 						{navLinks.map((link) => {
 							const IconComponent = link.icon;
 							return (
 								<Link
 									key={link.href}
 									href={link.href}
-									className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-600 font-medium transition-all hover:text-teal-600 hover:bg-teal-50"
+									className={desktopNavPillClass}
 								>
 									<IconComponent className="w-4 h-4" />
 									{link.label}
@@ -90,12 +98,12 @@ export default function Header() {
 					</nav>
 
 					{/* Desktop Auth Buttons */}
-					<div className="hidden lg:flex items-center gap-3">
+					<div className="hidden lg:flex items-center gap-3 ml-auto">
 						{isAuthenticated ? (
 							<div className="relative">
 								<button
 									onClick={() => setUserMenuOpen((v) => !v)}
-									className="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors"
+									className="flex items-center gap-2 px-3 py-2 rounded-lg border border-teal-200/80 bg-white/60 text-teal-700 hover:bg-teal-50/90 hover:border-teal-300 hover:shadow-sm active:scale-95 transition-all duration-300 ease-in-out"
 								>
 									<div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center">
 										<User className="w-4 h-4 text-white" />
@@ -135,17 +143,20 @@ export default function Header() {
 								)}
 							</div>
 						) : (
-							<div className="flex space-x-4">
+							<div className="flex gap-3">
 								<Link href="/login">
 									<Button
 										variant="outline"
-										className="border-teal-600 text-teal-600 hover:bg-teal-50"
+										className={authSignInButtonClass}
 									>
 										Sign In
 									</Button>
 								</Link>
 								<Link href="/signup">
-									<Button className="bg-teal-600 hover:bg-teal-700">
+									<Button
+										variant="outline"
+										className={authSignInButtonClass}
+									>
 										Get Started
 									</Button>
 								</Link>
@@ -154,11 +165,11 @@ export default function Header() {
 					</div>
 
 					{/* Mobile: Hamburger + User/Sign In */}
-					<div className="flex lg:hidden items-center gap-3">
+					<div className="flex lg:hidden items-center gap-3 ml-auto">
 						{isAuthenticated ? (
 							<button
 								onClick={() => setUserMenuOpen((v) => !v)}
-								className="p-2 rounded-full bg-teal-50 text-teal-700"
+								className="p-2 rounded-full border border-teal-200/80 bg-white/60 text-teal-700 hover:bg-teal-50/90 hover:border-teal-300 hover:shadow-sm active:scale-95 transition-all duration-300 ease-in-out"
 							>
 								<User className="w-5 h-5" />
 							</button>
@@ -167,7 +178,7 @@ export default function Header() {
 								<Button
 									variant="outline"
 									size="sm"
-									className="border-teal-600 text-teal-600 hover:bg-teal-50"
+									className={authSignInButtonClass}
 								>
 									Sign In
 								</Button>
@@ -176,7 +187,7 @@ export default function Header() {
 						<button
 							onClick={() => setMenuOpen((v) => !v)}
 							aria-label="Toggle menu"
-							className="p-2 rounded-md text-gray-600 hover:text-teal-600 hover:bg-gray-100 transition-colors"
+							className="p-2 rounded-md text-gray-600 hover:text-teal-700 hover:bg-white/80 hover:shadow-sm active:scale-95 transition-all duration-300 ease-in-out"
 						>
 							{menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
 						</button>
@@ -216,7 +227,7 @@ export default function Header() {
 
 			{/* Mobile Dropdown Menu */}
 			{menuOpen && (
-				<div className="lg:hidden border-t border-gray-100 bg-white shadow-lg">
+				<div className="lg:hidden border-t border-teal-100/80 bg-gradient-to-b from-white to-teal-50/60 shadow-lg">
 					<nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
 						{navLinks.map((link) => {
 							const IconComponent = link.icon;
@@ -225,7 +236,7 @@ export default function Header() {
 									key={link.href}
 									href={link.href}
 									onClick={() => setMenuOpen(false)}
-									className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 font-medium hover:bg-teal-50 hover:text-teal-700 transition-colors"
+									className={mobileNavPillClass}
 								>
 									<IconComponent className="w-5 h-5" />
 									{link.label}
@@ -235,7 +246,10 @@ export default function Header() {
 						{!isAuthenticated && (
 							<div className="mt-3 pt-3 border-t border-gray-100">
 								<Link href="/signup" onClick={() => setMenuOpen(false)}>
-									<Button className="w-full bg-teal-600 hover:bg-teal-700">
+									<Button
+										variant="outline"
+										className={`w-full ${authSignInButtonClass}`}
+									>
 										Get Started
 									</Button>
 								</Link>

@@ -29,6 +29,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
+/**
+ * Flow note: DoctorWorkplaceServiceImpl belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorWorkplaceServiceImpl implements DoctorWorkplaceService {
     private final DoctorWorkplaceRepository doctorWorkplaceRepository;
     private final DoctorRepository doctorRepository;

@@ -13,6 +13,10 @@ import java.time.LocalDate;
  */
 @Getter
 @Setter
+/**
+ * Flow note: DoctorDegreeRequest belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorDegreeRequest {
 
     @NotNull(message = "Doctor ID is required")

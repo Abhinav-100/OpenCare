@@ -40,6 +40,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "API for user authentication and authorization")
+/**
+ * Flow note: AuthApiController belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class AuthApiController {
 
     private final AuthService authService;

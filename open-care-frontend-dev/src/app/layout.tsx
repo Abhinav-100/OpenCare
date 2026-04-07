@@ -53,12 +53,15 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	// This is the global app shell for every route in App Router.
 	return (
 		<html lang="en">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
+				{/* Global providers keep shared state/query clients available app-wide. */}
 				<ClientProviders>
+					{/* Analytics, route-aware layout wrapper, and global toast container. */}
 					<GoogleAnalytics />
 					<LayoutWrapper>{children}</LayoutWrapper>
 					<Toaster />

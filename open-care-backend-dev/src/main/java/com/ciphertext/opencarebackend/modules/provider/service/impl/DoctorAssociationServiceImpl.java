@@ -28,6 +28,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
+/**
+ * Flow note: DoctorAssociationServiceImpl belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorAssociationServiceImpl implements DoctorAssociationService {
     private final DoctorAssociationRepository doctorAssociationRepository;
     private final DoctorRepository doctorRepository;

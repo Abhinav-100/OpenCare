@@ -27,8 +27,10 @@ import { Badge } from "@/modules/platform/components/ui/badge";
 import { Textarea } from "@/modules/platform/components/ui/textarea";
 import { Label } from "@/modules/platform/components/ui/label";
 import { fetchDoctorSlots, createAppointment } from "@/modules/clinical/api/appointments";
+import { useAuth } from "@/modules/access/context/auth-context";
 import type { DoctorDetailsResponse, DoctorResponse } from "@/shared/types/doctors";
 import type { CreateAppointmentRequest, AvailableSlot } from "@/shared/types/appointments";
+import { David_Libre, Dawning_of_a_New_Day } from "next/font/google";
 
 interface BookAppointmentModalProps {
 	open: boolean;
@@ -43,6 +45,7 @@ export function BookAppointmentModal({
 }: BookAppointmentModalProps) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const { isAuthenticated } = useAuth();
 	const [selectedDate, setSelectedDate] = useState<Date>();
 	const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
 	const [appointmentType, setAppointmentType] = useState<"ONLINE" | "OFFLINE">("ONLINE");
@@ -51,6 +54,10 @@ export function BookAppointmentModal({
 	const offlineConsultationFee = doctor.consultationFeeOffline ?? 700;
 	const doctorSpecializations = doctor.specializations || "General Medicine";
 	const doctorExperience = doctor.yearOfExperience ?? 0;
+	const primaryWorkplace = doctor.doctorWorkplaces?.[0];
+	const doctorHospitalId = (doctor as { hospital?: { id?: number | null } }).hospital?.id;
+	const resolvedHospitalId = primaryWorkplace?.hospital?.id ?? doctorHospitalId ?? undefined;
+	const resolvedWorkplaceId = primaryWorkplace?.id;
 
 	// Fetch available slots when date is selected
 	const {
@@ -88,6 +95,12 @@ export function BookAppointmentModal({
 	});
 
 	const handleBookAppointment = () => {
+		if (!isAuthenticated) {
+			toast.error("Please sign in to book an appointment");
+			router.push("/login");
+			return;
+		}
+
 		if (!selectedDate || !selectedSlot) {
 			toast.error("Please select a date and time slot");
 			return;
@@ -106,6 +119,8 @@ export function BookAppointmentModal({
 			endTime: selectedSlot.endTime,
 			durationMinutes: 30,
 			consultationFee,
+			hospitalId: resolvedHospitalId,
+			doctorWorkplaceId: resolvedWorkplaceId,
 			symptoms: symptoms || undefined,
 		};
 

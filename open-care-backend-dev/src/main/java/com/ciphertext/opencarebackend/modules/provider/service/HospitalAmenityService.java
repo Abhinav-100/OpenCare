@@ -10,6 +10,10 @@ import java.util.List;
 /**
  * @author Sadman
  */
+/**
+ * Flow note: HospitalAmenityService belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface HospitalAmenityService {
     Page<HospitalAmenity> getPaginatedDataWithFilters(AmenityFilter amenityFilter, Pageable pagingSort);
     List<HospitalAmenity> getHospitalAmenitiesByHospitalId(Long hospitalId);

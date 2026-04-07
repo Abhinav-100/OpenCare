@@ -44,6 +44,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/hospitals")
 @RequiredArgsConstructor
 @Tag(name = "Hospital Management", description = "API for managing hospital information including creation, retrieval, updating and deletion of hospital records")
+/**
+ * Flow note: HospitalApiController belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class HospitalApiController {
 
     private final HospitalService hospitalService;

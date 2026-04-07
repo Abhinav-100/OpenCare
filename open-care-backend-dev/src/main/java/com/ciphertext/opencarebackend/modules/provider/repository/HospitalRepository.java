@@ -13,6 +13,10 @@ import java.util.Optional;
  * @author Sadman
  */
 @Repository
+/**
+ * Flow note: HospitalRepository belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public interface HospitalRepository extends JpaRepository<Hospital, Integer>, JpaSpecificationExecutor<Hospital> {
     Optional<Hospital> findByRegistrationCode(String registrationCode);
     boolean existsByRegistrationCode(String registrationCode);

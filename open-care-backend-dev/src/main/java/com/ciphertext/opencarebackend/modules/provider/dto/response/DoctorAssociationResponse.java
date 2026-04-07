@@ -7,6 +7,10 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+/**
+ * Flow note: DoctorAssociationResponse belongs to the provider doctor/hospital module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class DoctorAssociationResponse {
     private Long id;
     private DoctorResponse doctor;

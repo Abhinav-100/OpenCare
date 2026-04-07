@@ -8,6 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+/**
+ * Flow note: RefreshTokenRequest belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class RefreshTokenRequest {
     @NotBlank(message = "Refresh token is required")
     private String refreshToken;

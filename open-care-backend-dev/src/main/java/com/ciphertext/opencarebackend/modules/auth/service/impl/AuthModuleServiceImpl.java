@@ -24,6 +24,10 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Flow note: AuthModuleServiceImpl belongs to the authentication module.
+ * Read this with neighboring controller/service/repository files to trace request flow.
+ */
 public class AuthModuleServiceImpl implements AuthModuleService {
 
     private final AuthUserRepository authUserRepository;
